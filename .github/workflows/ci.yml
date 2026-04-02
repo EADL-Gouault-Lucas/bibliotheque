@@ -3,38 +3,14 @@ name: CI
 on:
   push:
     branches: [main]
-    paths:
-      - 'api/**'
-      - 'front/**'
   pull_request:
     branches: [main]
-    paths:
-      - 'api/**'
-      - 'front/**'
+  workflow_dispatch:
 
 jobs:
-  # Détecte quels projets ont changé pour n'exécuter que les jobs nécessaires
-  changes:
-    runs-on: ubuntu-latest
-    outputs:
-      api: ${{ steps.filter.outputs.api }}
-      front: ${{ steps.filter.outputs.front }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            api:
-              - 'api/**'
-            front:
-              - 'front/**'
-
   # ── Job API ────────────────────────────────────────────────────────────────
   ci-api:
     name: CI — API
-    needs: changes
-    if: needs.changes.outputs.api == 'true'
     runs-on: ubuntu-latest
 
     services:
@@ -102,8 +78,6 @@ jobs:
   # ── Job Frontend ───────────────────────────────────────────────────────────
   ci-front:
     name: CI — Frontend
-    needs: changes
-    if: needs.changes.outputs.front == 'true'
     runs-on: ubuntu-latest
 
     defaults:
