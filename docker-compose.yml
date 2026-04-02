@@ -18,32 +18,24 @@ services:
       timeout: 5s
       retries: 5
 
-  api:
-    build:
-      context: ./api
-      dockerfile: Dockerfile
-    container_name: bibliotheque-api
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: bibliotheque-pgadmin
     restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: lucas@biblio.fr
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
     ports:
-      - "8080:8080"
-    env_file:
-      - ./api/.env
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - ./pgadmin-servers.json:/pgadmin4/servers.json:ro
     depends_on:
       postgres:
         condition: service_healthy
 
-  front:
-    build:
-      context: ./front
-      dockerfile: Dockerfile
-    container_name: bibliotheque-front
-    restart: unless-stopped
-    ports:
-      - "3000:3000"
-    env_file:
-      - ./front/.env
-    depends_on:
-      - api
-
 volumes:
   postgres_data:
+  pgadmin_data:

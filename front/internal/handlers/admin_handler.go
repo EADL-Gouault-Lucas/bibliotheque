@@ -19,21 +19,30 @@ func NewAdminHandler(api *apiclient.Client) *AdminHandler {
 	return &AdminHandler{api: api}
 }
 
-// ShowRetards - GET /admin/retards
-func (h *AdminHandler) ShowRetards(c *gin.Context) {
+// ShowEmprunts - GET /admin/emprunts
+func (h *AdminHandler) ShowEmprunts(c *gin.Context) {
 	user, _ := session.Get(c)
-	emprunts, err := h.api.ListRetards(user.Token)
+	emprunts, err := h.api.ListActifs(user.Token)
 	if err != nil {
 		emprunts = nil
 	}
 
+	hasRetards := false
+	for i := range emprunts {
+		if emprunts[i].IsEnRetard() {
+			hasRetards = true
+			break
+		}
+	}
+
+	errMsg := c.Query("error")
 	successMsg := c.Query("success")
 	rappels := 0
 	if q := c.Query("rappels"); q != "" {
 		_, _ = fmt.Sscanf(q, "%d", &rappels)
 	}
 
-	comp := templates.Retards(emprunts, user, successMsg, rappels)
+	comp := templates.Retards(emprunts, hasRetards, user, errMsg, successMsg, rappels)
 	_ = comp.Render(c.Request.Context(), c.Writer)
 }
 
@@ -44,22 +53,22 @@ func (h *AdminHandler) RetourExemplaire(c *gin.Context) {
 
 	_, err := h.api.RetourExemplaire(user.Token, empruntID)
 	if err != nil {
-		c.Redirect(http.StatusFound, "/admin/retards?error="+encodeMsg(err.Error()))
+		c.Redirect(http.StatusFound, "/admin/emprunts?error="+encodeMsg(err.Error()))
 		return
 	}
 
-	c.Redirect(http.StatusFound, "/admin/retards?success=Exemplaire+marque+comme+rendu")
+	c.Redirect(http.StatusFound, "/admin/emprunts?success=Exemplaire+marque+comme+rendu")
 }
 
-// EnvoyerRappels - POST /admin/rappels
+// EnvoyerRappels - POST /admin/emprunts/rappels
 func (h *AdminHandler) EnvoyerRappels(c *gin.Context) {
 	user, _ := session.Get(c)
 
 	resp, err := h.api.EnvoyerRappels(user.Token)
 	if err != nil {
-		c.Redirect(http.StatusFound, "/admin/retards?error="+encodeMsg(err.Error()))
+		c.Redirect(http.StatusFound, "/admin/emprunts?error="+encodeMsg(err.Error()))
 		return
 	}
 
-	c.Redirect(http.StatusFound, fmt.Sprintf("/admin/retards?rappels=%d", resp.RappelsEnvoyes))
+	c.Redirect(http.StatusFound, fmt.Sprintf("/admin/emprunts?rappels=%d", resp.RappelsEnvoyes))
 }

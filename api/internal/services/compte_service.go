@@ -23,12 +23,10 @@ func NewCompteService(repo *repository.CompteRepository) *CompteService {
 }
 
 type CreateCompteInput struct {
-	Email           string  `json:"email"           binding:"required,email"`
-	Prenom          string  `json:"prenom"          binding:"required"`
-	Nom             string  `json:"nom"             binding:"required"`
-	MotDePasse      string  `json:"mot_de_passe"    binding:"required,min=8"`
-	CautionInitiale float64 `json:"caution_initiale" binding:"required,gte=0"`
-	Adresse         string  `json:"adresse"         binding:"required"`
+	Email      string `json:"email"        binding:"required,email"`
+	Prenom     string `json:"prenom"       binding:"required"`
+	Nom        string `json:"nom"          binding:"required"`
+	MotDePasse string `json:"mot_de_passe" binding:"required,min=8"`
 }
 
 type LoginInput struct {
@@ -54,8 +52,7 @@ func (s *CompteService) CreateCompte(input CreateCompteInput) (*models.Compte, e
 		Prenom:          input.Prenom,
 		Nom:             input.Nom,
 		MotDePasse:      hash,
-		CautionRestante: input.CautionInitiale,
-		Adresse:         input.Adresse,
+		CautionRestante: 0,
 	}
 	if err := s.repo.Create(compte); err != nil {
 		return nil, err

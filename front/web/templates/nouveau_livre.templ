@@ -14,19 +14,15 @@ templ NouveauLivre(user *session.User, errMsg string) {
 						if errMsg != "" {
 							@Alert("danger", errMsg)
 						}
-						<form method="POST" action="/livres">
+						<form method="POST" action="/admin/livres">
 							<div class="mb-3">
 								<label for="titre" class="form-label">Titre <span class="text-danger">*</span></label>
 								<input type="text" class="form-control" id="titre" name="titre" required/>
 							</div>
 							<div class="row g-3 mb-3">
-								<div class="col-md-6">
-									<label for="code_isbn" class="form-label">ISBN <span class="text-danger">*</span></label>
-									<input type="text" class="form-control" id="code_isbn" name="code_isbn" required/>
-								</div>
-								<div class="col-md-6">
-									<label for="code_barre" class="form-label">Code barre</label>
-									<input type="text" class="form-control" id="code_barre" name="code_barre"/>
+							<div class="col-md-12">
+								<label for="code_isbn" class="form-label">ISBN <span class="text-danger">*</span></label>
+								<input type="text" class="form-control" id="code_isbn" name="code_isbn" required/>
 								</div>
 							</div>
 							<div class="mb-3">

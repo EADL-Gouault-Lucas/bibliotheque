@@ -36,36 +36,35 @@ func (h *CatalogueHandler) ShowCatalogue(c *gin.Context) {
 	_ = comp.Render(c.Request.Context(), c.Writer)
 }
 
-// ShowNouveauLivre - GET /livres/nouveau (biblio only)
+// ShowNouveauLivre - GET /admin/livres/nouveau (biblio only)
 func (h *CatalogueHandler) ShowNouveauLivre(c *gin.Context) {
 	user, _ := session.Get(c)
 	comp := templates.NouveauLivre(user, c.Query("error"))
 	_ = comp.Render(c.Request.Context(), c.Writer)
 }
 
-// CreateLivre - POST /livres (biblio only)
+// CreateLivre - POST /admin/livres (biblio only)
 func (h *CatalogueHandler) CreateLivre(c *gin.Context) {
 	user, _ := session.Get(c)
 
 	auteurs := splitAndTrim(c.PostForm("auteurs"))
 
 	input := apiclient.CreateLivreInput{
-		Titre:     c.PostForm("titre"),
-		CodeBarre: c.PostForm("code_barre"),
-		CodeISBN:  c.PostForm("code_isbn"),
-		Auteurs:   auteurs,
+		Titre:    c.PostForm("titre"),
+		CodeISBN: c.PostForm("code_isbn"),
+		Auteurs:  auteurs,
 	}
 
 	_, err := h.api.CreateLivre(user.Token, input)
 	if err != nil {
-		c.Redirect(http.StatusFound, "/livres/nouveau?error="+encodeMsg(err.Error()))
+		c.Redirect(http.StatusFound, "/admin/livres/nouveau?error="+encodeMsg(err.Error()))
 		return
 	}
 
 	c.Redirect(http.StatusFound, "/")
 }
 
-// ShowNouvelExemplaire - GET /livres/:id/exemplaires/nouveau (biblio only)
+// ShowNouvelExemplaire - GET /admin/livres/:id/exemplaires/nouveau (biblio only)
 func (h *CatalogueHandler) ShowNouvelExemplaire(c *gin.Context) {
 	livreID := parseUint(c.Param("id"))
 	livre, err := h.api.GetLivre(livreID)
@@ -84,7 +83,7 @@ func (h *CatalogueHandler) ShowNouvelExemplaire(c *gin.Context) {
 	_ = comp.Render(c.Request.Context(), c.Writer)
 }
 
-// CreateExemplaire - POST /livres/:id/exemplaires (biblio only)
+// CreateExemplaire - POST /admin/livres/:id/exemplaires (biblio only)
 func (h *CatalogueHandler) CreateExemplaire(c *gin.Context) {
 	livreID := parseUint(c.Param("id"))
 	user, _ := session.Get(c)
@@ -101,7 +100,7 @@ func (h *CatalogueHandler) CreateExemplaire(c *gin.Context) {
 
 	_, err := h.api.AddExemplaire(user.Token, livreID, input)
 	if err != nil {
-		redirect := "/livres/" + c.Param("id") + "/exemplaires/nouveau?error=" + encodeMsg(err.Error())
+		redirect := "/admin/livres/" + c.Param("id") + "/exemplaires/nouveau?error=" + encodeMsg(err.Error())
 		c.Redirect(http.StatusFound, redirect)
 		return
 	}

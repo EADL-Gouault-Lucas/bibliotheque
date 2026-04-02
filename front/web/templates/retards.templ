@@ -8,16 +8,21 @@ import (
 	"time"
 )
 
-templ Retards(emprunts []models.Emprunt, user *session.User, successMsg string, rappelsEnvoyes int) {
-	@Layout("Gestion des retards", user) {
+templ Retards(emprunts []models.Emprunt, hasRetards bool, user *session.User, errMsg string, successMsg string, rappelsEnvoyes int) {
+	@Layout("Emprunts en cours", user) {
 		<div class="d-flex justify-content-between align-items-center mb-4">
-			<h1 class="h3 mb-0">Emprunts en retard</h1>
-			<form method="POST" action="/admin/rappels">
-				<button type="submit" class="btn btn-warning">
-					Envoyer rappels par mail
-				</button>
-			</form>
+			<h1 class="h3 mb-0">Emprunts en cours</h1>
+			if hasRetards {
+				<form method="POST" action="/admin/emprunts/rappels">
+					<button type="submit" class="btn btn-warning">
+						Envoyer rappels par mail
+					</button>
+				</form>
+			}
 		</div>
+		if errMsg != "" {
+			@Alert("danger", errMsg)
+		}
 		if successMsg != "" {
 			@Alert("success", successMsg)
 		}
@@ -25,7 +30,7 @@ templ Retards(emprunts []models.Emprunt, user *session.User, successMsg string, 
 			@Alert("info", fmt.Sprintf("%d rappel(s) envoye(s) aux emprunteurs en retard.", rappelsEnvoyes))
 		}
 		if len(emprunts) == 0 {
-			<div class="alert alert-success">Aucun emprunt en retard. Tout est en ordre !</div>
+			<div class="alert alert-success">Aucun emprunt en cours.</div>
 		} else {
 			<div class="table-responsive">
 				<table class="table table-hover align-middle">
@@ -63,9 +68,13 @@ templ Retards(emprunts []models.Emprunt, user *session.User, successMsg string, 
 								</td>
 								<td>{ e.DateLimite.Format("02/01/2006") }</td>
 								<td>
-									<span class="badge bg-danger">
-										{ strconv.Itoa(int(time.Since(e.DateLimite).Hours()/24)) } j de retard
-									</span>
+									if e.IsEnRetard() {
+										<span class="badge bg-danger">
+											{ strconv.Itoa(int(time.Since(e.DateLimite).Hours()/24)) } j de retard
+										</span>
+									} else {
+										<span class="text-muted">—</span>
+									}
 								</td>
 								<td>
 									<strong>{ fmt.Sprintf("%.2f", e.Exemplaire.Caution) }€</strong>
@@ -85,7 +94,7 @@ templ Retards(emprunts []models.Emprunt, user *session.User, successMsg string, 
 					</tbody>
 				</table>
 			</div>
-			<p class="text-muted small">{ strconv.Itoa(len(emprunts)) } emprunt(s) en retard</p>
+			<p class="text-muted small">{ strconv.Itoa(len(emprunts)) } emprunt(s) en cours</p>
 		}
 	}
 }

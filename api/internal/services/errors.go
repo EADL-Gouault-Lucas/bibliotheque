@@ -5,19 +5,19 @@ import "errors"
 // Erreurs métier
 var (
 	// Emprunt
-	ErrEmpruntEnRetard        = errors.New("le compte a des emprunts en retard")
-	ErrCautionInsuffisante    = errors.New("caution restante insuffisante pour cet exemplaire")
-	ErrExemplaireIndisponible = errors.New("cet exemplaire est déjà emprunté")
-	ErrLivreDejaEmprunte      = errors.New("vous avez déjà un exemplaire de ce livre en cours d'emprunt")
-	ErrBibliothecaireEmprunt  = errors.New("les bibliothécaires ne peuvent pas emprunter")
-	ErrEmpruntDejaRendu       = errors.New("cet emprunt a déjà été retourné")
+	ErrEmpruntEnRetard        = errors.New("Le compte a des emprunts en retard")
+	ErrCautionInsuffisante    = errors.New("Caution restante insuffisante pour cet exemplaire")
+	ErrExemplaireIndisponible = errors.New("Cet exemplaire est déjà emprunté")
+	ErrLivreDejaEmprunte      = errors.New("Vous avez déjà un exemplaire de ce livre en cours d'emprunt")
+	ErrBibliothecaireEmprunt  = errors.New("Les bibliothécaires ne peuvent pas emprunter")
+	ErrEmpruntDejaRendu       = errors.New("Cet emprunt a déjà été retourné")
 
 	// Compte
-	ErrEmailExistant         = errors.New("cette adresse email est déjà utilisée")
-	ErrIdentifiantsInvalides = errors.New("email ou mot de passe incorrect")
+	ErrEmailExistant         = errors.New("Cette adresse email est déjà utilisée")
+	ErrIdentifiantsInvalides = errors.New("Email ou mot de passe incorrect")
 
 	// Livre / Exemplaire
-	ErrLivreSansAuteur = errors.New("le livre doit avoir au moins un auteur")
+	ErrLivreSansAuteur = errors.New("Le livre doit avoir au moins un auteur")
 
-	ErrLivreInexistant = errors.New("livre introuvable dans le catalogue")
+	ErrLivreInexistant = errors.New("Livre introuvable dans le catalogue")
 )

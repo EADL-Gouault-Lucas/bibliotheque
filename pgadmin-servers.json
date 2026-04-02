@@ -1,0 +1,15 @@
+{
+    "Servers": {
+        "1": {
+            "Name": "Bibliothèque",
+            "Group": "Servers",
+            "Host": "postgres",
+            "Port": 5432,
+            "MaintenanceDB": "bibliotheque",
+            "Username": "postgres",
+            "Password": "postgres",
+            "SSLMode": "disable",
+            "SavePassword": true
+        }
+    }
+}

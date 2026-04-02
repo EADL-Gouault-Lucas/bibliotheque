@@ -82,6 +82,7 @@ func main() {
 	livres := v1.Group("/livres")
 	{
 		livres.GET("", livreHandler.ListLivres)
+		livres.GET("/:id", livreHandler.GetLivre)
 		livres.POST("", authMiddleware.Require(), authMiddleware.RequireBibliothecaire(), livreHandler.CreateLivre)
 		livres.POST("/:id/exemplaires", authMiddleware.Require(), authMiddleware.RequireBibliothecaire(), livreHandler.AddExemplaire)
 	}
@@ -93,12 +94,17 @@ func main() {
 		emprunts.POST("", empruntHandler.CreateEmprunt)
 		// Routes bibliothécaire
 		emprunts.PUT("/:id/retour", authMiddleware.RequireBibliothecaire(), empruntHandler.RetourExemplaire)
+		emprunts.GET("/actifs", authMiddleware.RequireBibliothecaire(), empruntHandler.ListActifs)
 		emprunts.GET("/retards", authMiddleware.RequireBibliothecaire(), empruntHandler.ListRetards)
 		emprunts.POST("/rappels", authMiddleware.RequireBibliothecaire(), empruntHandler.EnvoyerRappels)
 	}
 
-	log.Println("API démarrée sur :8080")
-	if err := r.Run(":8080"); err != nil {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	log.Printf("API démarrée sur :%s\n", port) // #nosec G706 -- port is a server-side env var
+	if err := r.Run(":" + port); err != nil {
 		log.Fatal("Serveur arrêté : ", err)
 	}
 }

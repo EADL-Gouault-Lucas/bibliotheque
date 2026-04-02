@@ -81,6 +81,16 @@ func (h *EmpruntHandler) RetourExemplaire(c *gin.Context) {
 	c.JSON(http.StatusOK, emprunt)
 }
 
+// ListActifs - GET /api/v1/emprunts/actifs (bibliothécaire)
+func (h *EmpruntHandler) ListActifs(c *gin.Context) {
+	emprunts, err := h.empruntSvc.ListActifs()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "erreur interne"})
+		return
+	}
+	c.JSON(http.StatusOK, emprunts)
+}
+
 // ListRetards - GET /api/v1/emprunts/retards (bibliothécaire)
 // R7, R10
 func (h *EmpruntHandler) ListRetards(c *gin.Context) {

@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"net/http"
-	"strconv"
 
 	"bibliotheque-front/internal/apiclient"
 	"bibliotheque-front/internal/session"
@@ -22,7 +21,8 @@ func NewAuthHandler(api *apiclient.Client) *AuthHandler {
 // ShowLogin - GET /login
 func (h *AuthHandler) ShowLogin(c *gin.Context) {
 	errMsg := c.Query("error")
-	comp := templates.Login(errMsg)
+	successMsg := c.Query("success")
+	comp := templates.Login(errMsg, successMsg)
 	_ = comp.Render(c.Request.Context(), c.Writer)
 }
 
@@ -58,15 +58,11 @@ func (h *AuthHandler) ShowRegister(c *gin.Context) {
 
 // Register - POST /register
 func (h *AuthHandler) Register(c *gin.Context) {
-	caution, _ := strconv.ParseFloat(c.PostForm("caution_initiale"), 64)
-
 	input := apiclient.RegisterInput{
-		Email:           c.PostForm("email"),
-		Prenom:          c.PostForm("prenom"),
-		Nom:             c.PostForm("nom"),
-		MotDePasse:      c.PostForm("mot_de_passe"),
-		CautionInitiale: caution,
-		Adresse:         c.PostForm("adresse"),
+		Email:      c.PostForm("email"),
+		Prenom:     c.PostForm("prenom"),
+		Nom:        c.PostForm("nom"),
+		MotDePasse: c.PostForm("mot_de_passe"),
 	}
 
 	_, err := h.api.Register(input)

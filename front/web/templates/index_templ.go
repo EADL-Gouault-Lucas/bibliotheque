@@ -100,7 +100,7 @@ func navbar(user *session.User) templ.Component {
 			}
 		}
 		if user != nil && user.IsBibliothecaire {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<li class=\"nav-item\"><a class=\"nav-link\" href=\"/livres/nouveau\">Ajouter un livre</a></li><li class=\"nav-item\"><a class=\"nav-link\" href=\"/admin/retards\">Retards</a></li>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<li class=\"nav-item\"><a class=\"nav-link\" href=\"/admin/livres/nouveau\">Ajouter un livre</a></li><li class=\"nav-item\"><a class=\"nav-link\" href=\"/admin/emprunts\">Emprunts en cours</a></li>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

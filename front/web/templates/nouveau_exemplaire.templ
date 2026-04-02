@@ -26,7 +26,7 @@ templ NouvelExemplaire(livre models.Livre, user *session.User, errMsg string) {
 						}
 						<form
 							method="POST"
-							action={ templ.SafeURL(fmt.Sprintf("/livres/%d/exemplaires", livre.ID)) }
+							action={ templ.SafeURL(fmt.Sprintf("/admin/livres/%d/exemplaires", livre.ID)) }
 						>
 							<div class="row g-3 mb-3">
 								<div class="col-md-6">

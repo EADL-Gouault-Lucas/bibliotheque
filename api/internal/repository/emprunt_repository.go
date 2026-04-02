@@ -45,6 +45,15 @@ func (r *EmpruntRepository) FindActiveByCompteAndLivre(compteID, livreID uint) (
 	return emprunts, err
 }
 
+// FindAllActifs retourne tous les emprunts non rendus.
+func (r *EmpruntRepository) FindAllActifs() ([]models.Emprunt, error) {
+	var emprunts []models.Emprunt
+	err := r.db.Preload("Exemplaire.Livre").Preload("Compte").
+		Where("rendu = false").
+		Find(&emprunts).Error
+	return emprunts, err
+}
+
 // FindAllEnRetard retourne tous les emprunts en retard (non rendus, date_limite dépassée).
 func (r *EmpruntRepository) FindAllEnRetard() ([]models.Emprunt, error) {
 	var emprunts []models.Emprunt

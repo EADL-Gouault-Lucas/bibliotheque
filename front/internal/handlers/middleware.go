@@ -32,3 +32,5 @@ func RequireBibliothecaire() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+

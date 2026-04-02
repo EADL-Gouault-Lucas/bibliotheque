@@ -27,12 +27,10 @@ func New(baseURL string) *Client {
 // ── Auth ──────────────────────────────────────────────────────────────────────
 
 type RegisterInput struct {
-	Email           string  `json:"email"`
-	Prenom          string  `json:"prenom"`
-	Nom             string  `json:"nom"`
-	MotDePasse      string  `json:"mot_de_passe"`
-	CautionInitiale float64 `json:"caution_initiale"`
-	Adresse         string  `json:"adresse"`
+	Email      string `json:"email"`
+	Prenom     string `json:"prenom"`
+	Nom        string `json:"nom"`
+	MotDePasse string `json:"mot_de_passe"`
 }
 
 type LoginInput struct {
@@ -58,10 +56,9 @@ func (c *Client) Login(input LoginInput) (*LoginResponse, error) {
 // ── Livres ────────────────────────────────────────────────────────────────────
 
 type CreateLivreInput struct {
-	Titre     string   `json:"titre"`
-	CodeBarre string   `json:"code_barre"`
-	CodeISBN  string   `json:"code_isbn"`
-	Auteurs   []string `json:"auteurs"`
+	Titre    string   `json:"titre"`
+	CodeISBN string   `json:"code_isbn"`
+	Auteurs  []string `json:"auteurs"`
 }
 
 type AddExemplaireInput struct {
@@ -116,6 +113,11 @@ func (c *Client) CreateEmprunt(token string, input CreateEmpruntInput) (*models.
 func (c *Client) RetourExemplaire(token string, empruntID uint) (*models.Emprunt, error) {
 	var emprunt models.Emprunt
 	return &emprunt, c.put(fmt.Sprintf("/api/v1/emprunts/%d/retour", empruntID), token, nil, &emprunt)
+}
+
+func (c *Client) ListActifs(token string) ([]models.Emprunt, error) {
+	var emprunts []models.Emprunt
+	return emprunts, c.get("/api/v1/emprunts/actifs", token, &emprunts)
 }
 
 func (c *Client) ListRetards(token string) ([]models.Emprunt, error) {

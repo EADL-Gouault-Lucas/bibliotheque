@@ -8,7 +8,6 @@ type Compte struct {
 	Prenom           string    `json:"prenom"            gorm:"not null"`
 	Nom              string    `json:"nom"               gorm:"not null"`
 	MotDePasse       string    `json:"-"                 gorm:"not null"`
-	Adresse          string    `json:"adresse"           gorm:"not null"`
 	CautionRestante  float64   `json:"caution_restante"`
 	IsBibliothecaire bool      `json:"is_bibliothecaire" gorm:"default:false"`
 	Emprunts         []Emprunt `json:"emprunts,omitempty" gorm:"foreignKey:CompteID"`

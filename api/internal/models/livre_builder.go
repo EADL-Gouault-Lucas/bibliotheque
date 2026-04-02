@@ -18,11 +18,6 @@ func (b *LivreBuilder) SetTitre(titre string) *LivreBuilder {
 	return b
 }
 
-func (b *LivreBuilder) SetCodeBarre(codeBarre string) *LivreBuilder {
-	b.livre.CodeBarre = codeBarre
-	return b
-}
-
 func (b *LivreBuilder) SetCodeISBN(codeIsbn string) *LivreBuilder {
 	b.livre.CodeISBN = codeIsbn
 	return b

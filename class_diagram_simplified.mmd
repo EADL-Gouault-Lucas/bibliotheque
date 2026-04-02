@@ -1,64 +1,72 @@
 classDiagram
     %% Classes du domaine
     class Compte {
-        -int id
-        -string email
-        -string prenom
-        -string nom
-        -string mot_de_passe
-        -double caution_restante
-        -boolean isBibliothecaire
-        +isEnRetard() boolean
-        +getNomComplet() string
+        +uint ID
+        +string Email
+        +string Prenom
+        +string Nom
+        -string MotDePasse
+        +float64 CautionRestante
+        +bool IsBibliothecaire
+        +List~Emprunt~ Emprunts
+        +IsEnRetard() bool
+        +GetNomComplet() string
     }
 
     class Livre {
-        -int id
-        -string titre
-        -string code_barre
-        -string code_isbn
-        -List~string~ auteurs
+        +uint ID
+        +string Titre
+        +string CodeISBN
+        +List~string~ Auteurs
+        +List~Exemplaire~ Exemplaires
     }
 
     class Exemplaire {
-        -int id
-        -string code_barre
-        -boolean est_emprunte
-        -double caution
+        +uint ID
+        +string CodeBarre
+        +bool EstEmprunte
+        +float64 Caution
+        +string Travee
+        +string Etagere
+        +string Niveau
+        +uint LivreID
     }
 
     class Emprunt {
-        -int id
-        -date dateEmprunt
-        -date dateLimite
-        -date dateRetour
-        -boolean rendu
-        +isEnRetard() boolean
+        +uint ID
+        +time.Time DateEmprunt
+        +time.Time DateLimite
+        +time.Time DateRetour
+        +bool Rendu
+        +uint CompteID
+        +uint ExemplaireID
+        +IsEnRetard() bool
     }
 
     %% Patron Builder
     class CompteBuilder {
         -Compte compte
-        +setId(id: int) CompteBuilder
-        +setEmail(email: string) CompteBuilder
-        +setPrenom(prenom: string) CompteBuilder
-        +setNom(nom: string) CompteBuilder
-        +setMotDePasse(motDePasse: string) CompteBuilder
-        +setCautionRestante(caution: double) CompteBuilder
-        +setIsBibliothecaire(flag: boolean) CompteBuilder
-        +build() Compte
-        +reset() void
+        +NewCompteBuilder() CompteBuilder
+        +SetID(id: uint) CompteBuilder
+        +SetEmail(email: string) CompteBuilder
+        +SetPrenom(prenom: string) CompteBuilder
+        +SetNom(nom: string) CompteBuilder
+        +SetMotDePasse(motDePasse: string) CompteBuilder
+        +SetCautionRestante(caution: float64) CompteBuilder
+        +SetIsBibliothecaire(flag: bool) CompteBuilder
+        +Build() Compte
+        +Reset() void
     }
 
     class LivreBuilder {
         -Livre livre
-        +setId(id: int) LivreBuilder
-        +setTitre(titre: string) LivreBuilder
-        +setCodeBarre(codeBarre: string) LivreBuilder
-        +setCodeIsbn(codeIsbn: string) LivreBuilder
-        +setAuteurs(auteurs: List~string~) LivreBuilder
-        +build() Livre
-        +reset() void
+        +NewLivreBuilder() LivreBuilder
+        +SetID(id: uint) LivreBuilder
+        +SetTitre(titre: string) LivreBuilder
+        +SetCodeISBN(codeIsbn: string) LivreBuilder
+        +SetAuteurs(auteurs: List~string~) LivreBuilder
+        +Build() Livre
+        +Reset() void
     }
 
     %% Relations Builder

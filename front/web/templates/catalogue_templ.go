@@ -53,7 +53,7 @@ func Catalogue(livres []models.Livre, user *session.User, errMsg string) templ.C
 				return templ_7745c5c3_Err
 			}
 			if user != nil && user.IsBibliothecaire {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<a href=\"/livres/nouveau\" class=\"btn btn-primary\">+ Ajouter un livre</a>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<a href=\"/admin/livres/nouveau\" class=\"btn btn-primary\">+ Ajouter un livre</a>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -264,7 +264,7 @@ func livreCard(livre models.Livre, user *session.User) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var10 templ.SafeURL
-			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("/livres/%d/exemplaires/nouveau", livre.ID)))
+				templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("/admin/livres/%d/exemplaires/nouveau", livre.ID)))
 			if templ_7745c5c3_Err != nil {
 				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/catalogue.templ`, Line: 77, Col: 83}
 			}

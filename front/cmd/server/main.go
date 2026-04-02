@@ -48,14 +48,14 @@ func main() {
 	// ── Bibliothécaire ────────────────────────────────────────────────────────
 	biblio := r.Group("/", handlers.RequireAuth(), handlers.RequireBibliothecaire())
 	{
-		biblio.GET("/livres/nouveau", catalogueHandler.ShowNouveauLivre)
-		biblio.POST("/livres", catalogueHandler.CreateLivre)
-		biblio.GET("/livres/:id/exemplaires/nouveau", catalogueHandler.ShowNouvelExemplaire)
-		biblio.POST("/livres/:id/exemplaires", catalogueHandler.CreateExemplaire)
+		biblio.GET("/admin/livres/nouveau", catalogueHandler.ShowNouveauLivre)
+		biblio.POST("/admin/livres", catalogueHandler.CreateLivre)
+		biblio.GET("/admin/livres/:id/exemplaires/nouveau", catalogueHandler.ShowNouvelExemplaire)
+		biblio.POST("/admin/livres/:id/exemplaires", catalogueHandler.CreateExemplaire)
 
-		biblio.GET("/admin/retards", adminHandler.ShowRetards)
+		biblio.GET("/admin/emprunts", adminHandler.ShowEmprunts)
 		biblio.POST("/admin/emprunts/:id/retour", adminHandler.RetourExemplaire)
-		biblio.POST("/admin/rappels", adminHandler.EnvoyerRappels)
+		biblio.POST("/admin/emprunts/rappels", adminHandler.EnvoyerRappels)
 	}
 
 	port := os.Getenv("PORT")

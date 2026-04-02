@@ -1,6 +1,6 @@
 package templates
 
-templ Login(errMsg string) {
+templ Login(errMsg string, successMsg string) {
 	@Layout("Connexion", nil) {
 		<div class="row justify-content-center">
 			<div class="col-sm-10 col-md-7 col-lg-5">
@@ -9,6 +9,9 @@ templ Login(errMsg string) {
 						Connexion
 					</div>
 					<div class="card-body p-4">
+						if successMsg != "" {
+							@Alert("success", successMsg)
+						}
 						if errMsg != "" {
 							@Alert("danger", errMsg)
 						}

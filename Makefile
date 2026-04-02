@@ -29,11 +29,7 @@ build-api: ## Build l'API
 build-front: templ ## Build le frontend (génère les templates templ d'abord)
 	cd $(FRONT_DIR) && $(GO) build ./...
 
-# ── Run (local, sans Docker) ──────────────────────────────────────────────────
-dev-db: ## Démarre uniquement la base de données PostgreSQL dans Docker
-	docker compose up -d postgres
-
-run-api: dev-db ## Lance l'API en local (charge .env.local en priorité)
+run-api: ## Lance l'API en local (charge .env.local en priorité)
 	cd $(API_DIR) && $(GO) run ./cmd/server/main.go
 
 run-front: templ ## Lance le frontend en local (charge .env.local en priorité)

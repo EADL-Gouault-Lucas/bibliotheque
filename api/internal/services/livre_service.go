@@ -16,7 +16,6 @@ func NewLivreService(livreRepo *repository.LivreRepository, exemplaireRepo *repo
 
 type CreateLivreInput struct {
 	Titre     string   `json:"titre"      binding:"required"`
-	CodeBarre string   `json:"code_barre" binding:"required"`
 	CodeISBN  string   `json:"code_isbn"  binding:"required"`
 	Auteurs   []string `json:"auteurs"    binding:"required"`
 }
@@ -29,14 +28,21 @@ type AddExemplaireInput struct {
 	Niveau    string  `json:"niveau"     binding:"required"`
 }
 
+func (s *LivreService) GetLivre(id uint) (*models.Livre, error) {
+	livre, err := s.livreRepo.FindByID(id)
+	if err != nil {
+		return nil, ErrLivreInexistant
+	}
+	return livre, nil
+}
+
 // CreateLivre - R17 : titre, ISBN, au moins un auteur, au moins un thème
 func (s *LivreService) CreateLivre(input CreateLivreInput) (*models.Livre, error) {
 	if len(input.Auteurs) == 0 {
 		return nil, ErrLivreSansAuteur
 	}
 	livre := &models.Livre{
-		Titre:     input.Titre,
-		CodeBarre: input.CodeBarre,
+		Titre:    input.Titre,
 		CodeISBN:  input.CodeISBN,
 		Auteurs:   input.Auteurs,
 	}

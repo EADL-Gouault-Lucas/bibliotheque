@@ -50,6 +50,26 @@ func (h *LivreHandler) CreateLivre(c *gin.Context) {
 	c.JSON(http.StatusCreated, livre)
 }
 
+// GetLivre - GET /api/v1/livres/:id (public)
+func (h *LivreHandler) GetLivre(c *gin.Context) {
+	livreID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "identifiant de livre invalide"})
+		return
+	}
+
+	livre, err := h.livreSvc.GetLivre(uint(livreID))
+	if err != nil {
+		if errors.Is(err, services.ErrLivreInexistant) {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "erreur interne"})
+		return
+	}
+	c.JSON(http.StatusOK, livre)
+}
+
 // AddExemplaire - POST /api/v1/livres/:id/exemplaires (bibliothécaire)
 // R10, R19, R20
 func (h *LivreHandler) AddExemplaire(c *gin.Context) {

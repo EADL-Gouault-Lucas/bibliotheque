@@ -142,6 +142,11 @@ func (s *EmpruntService) MesEmprunts(compteID uint) ([]models.Emprunt, error) {
 	return s.empruntRepo.FindByCompteID(compteID)
 }
 
+// ListActifs retourne tous les emprunts en cours (non rendus).
+func (s *EmpruntService) ListActifs() ([]models.Emprunt, error) {
+	return s.empruntRepo.FindAllActifs()
+}
+
 // ListRetards retourne tous les emprunts en retard - R10
 func (s *EmpruntService) ListRetards() ([]models.Emprunt, error) {
 	return s.empruntRepo.FindAllEnRetard()
