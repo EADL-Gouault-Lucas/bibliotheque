@@ -12,8 +12,8 @@ import (
 )
 
 func main() {
-	godotenv.Load(".env.local") // priorité locale, ne fail pas si absent
-	godotenv.Load()             // valeurs par défaut depuis .env
+	_ = godotenv.Load(".env.local") // priorité locale, ne fail pas si absent
+	_ = godotenv.Load()             // valeurs par défaut depuis .env
 
 	apiURL := os.Getenv("API_URL")
 	if apiURL == "" {
@@ -63,5 +63,7 @@ func main() {
 		port = "3000"
 	}
 	log.Println("Frontend demarre sur :" + port)
-	r.Run(":" + port)
+	if err := r.Run(":" + port); err != nil {
+		log.Fatal("Serveur arrêté : ", err)
+	}
 }

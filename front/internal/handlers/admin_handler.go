@@ -30,11 +30,11 @@ func (h *AdminHandler) ShowRetards(c *gin.Context) {
 	successMsg := c.Query("success")
 	rappels := 0
 	if q := c.Query("rappels"); q != "" {
-		fmt.Sscanf(q, "%d", &rappels)
+		_, _ = fmt.Sscanf(q, "%d", &rappels)
 	}
 
 	comp := templates.Retards(emprunts, user, successMsg, rappels)
-	comp.Render(c.Request.Context(), c.Writer)
+	_ = comp.Render(c.Request.Context(), c.Writer)
 }
 
 // RetourExemplaire - POST /admin/emprunts/:id/retour

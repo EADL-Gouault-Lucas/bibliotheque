@@ -23,7 +23,7 @@ func NewAuthHandler(api *apiclient.Client) *AuthHandler {
 func (h *AuthHandler) ShowLogin(c *gin.Context) {
 	errMsg := c.Query("error")
 	comp := templates.Login(errMsg)
-	comp.Render(c.Request.Context(), c.Writer)
+	_ = comp.Render(c.Request.Context(), c.Writer)
 }
 
 // Login - POST /login
@@ -39,7 +39,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	session.Set(c, session.User{
+	_ = session.Set(c, session.User{
 		CompteID:         resp.Compte.ID,
 		Prenom:           resp.Compte.Prenom,
 		Nom:              resp.Compte.Nom,
@@ -53,7 +53,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 func (h *AuthHandler) ShowRegister(c *gin.Context) {
 	errMsg := c.Query("error")
 	comp := templates.Register(errMsg)
-	comp.Render(c.Request.Context(), c.Writer)
+	_ = comp.Render(c.Request.Context(), c.Writer)
 }
 
 // Register - POST /register

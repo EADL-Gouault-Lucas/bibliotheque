@@ -26,7 +26,7 @@ func (h *EmpruntHandler) ShowMesEmprunts(c *gin.Context) {
 		emprunts = nil
 	}
 	comp := templates.MesEmprunts(emprunts, user, c.Query("success"))
-	comp.Render(c.Request.Context(), c.Writer)
+	_ = comp.Render(c.Request.Context(), c.Writer)
 }
 
 // CreateEmprunt - POST /emprunts

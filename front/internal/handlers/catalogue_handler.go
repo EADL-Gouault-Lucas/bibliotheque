@@ -33,14 +33,14 @@ func (h *CatalogueHandler) ShowCatalogue(c *gin.Context) {
 
 	user, _ := session.Get(c)
 	comp := templates.Catalogue(livres, user, errMsg)
-	comp.Render(c.Request.Context(), c.Writer)
+	_ = comp.Render(c.Request.Context(), c.Writer)
 }
 
 // ShowNouveauLivre - GET /livres/nouveau (biblio only)
 func (h *CatalogueHandler) ShowNouveauLivre(c *gin.Context) {
 	user, _ := session.Get(c)
 	comp := templates.NouveauLivre(user, c.Query("error"))
-	comp.Render(c.Request.Context(), c.Writer)
+	_ = comp.Render(c.Request.Context(), c.Writer)
 }
 
 // CreateLivre - POST /livres (biblio only)
@@ -81,7 +81,7 @@ func (h *CatalogueHandler) ShowNouvelExemplaire(c *gin.Context) {
 		return
 	}
 	comp := templates.NouvelExemplaire(*livre, user, errMsg)
-	comp.Render(c.Request.Context(), c.Writer)
+	_ = comp.Render(c.Request.Context(), c.Writer)
 }
 
 // CreateExemplaire - POST /livres/:id/exemplaires (biblio only)

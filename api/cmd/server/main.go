@@ -21,8 +21,8 @@ import (
 // @host            localhost:8080
 // @BasePath        /api/v1
 func main() {
-	godotenv.Load(".env.local") // priorité locale, ne fail pas si absent
-	godotenv.Load()             // valeurs par défaut depuis .env
+	_ = godotenv.Load(".env.local") // priorité locale, ne fail pas si absent
+	_ = godotenv.Load()             // valeurs par défaut depuis .env
 
 	dsn := "host=" + os.Getenv("DB_HOST") +
 		" user=" + os.Getenv("DB_USER") +
@@ -37,12 +37,14 @@ func main() {
 	}
 
 	// AutoMigrate : crée/met à jour les tables automatiquement
-	db.AutoMigrate(
+	if err = db.AutoMigrate(
 		&models.Compte{},
 		&models.Livre{},
 		&models.Exemplaire{},
 		&models.Emprunt{},
-	)
+	); err != nil {
+		log.Fatal("AutoMigrate impossible : ", err)
+	}
 
 	// ── Repositories ──────────────────────────────────────────────────────────
 	compteRepo := repository.NewCompteRepository(db)
@@ -96,5 +98,7 @@ func main() {
 	}
 
 	log.Println("API démarrée sur :8080")
-	r.Run(":8080")
+	if err := r.Run(":8080"); err != nil {
+		log.Fatal("Serveur arrêté : ", err)
+	}
 }
