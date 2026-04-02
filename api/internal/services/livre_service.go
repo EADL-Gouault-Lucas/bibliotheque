@@ -15,9 +15,9 @@ func NewLivreService(livreRepo *repository.LivreRepository, exemplaireRepo *repo
 }
 
 type CreateLivreInput struct {
-	Titre     string   `json:"titre"      binding:"required"`
-	CodeISBN  string   `json:"code_isbn"  binding:"required"`
-	Auteurs   []string `json:"auteurs"    binding:"required"`
+	Titre    string   `json:"titre"      binding:"required"`
+	CodeISBN string   `json:"code_isbn"  binding:"required"`
+	Auteurs  []string `json:"auteurs"    binding:"required"`
 }
 
 type AddExemplaireInput struct {
@@ -43,8 +43,8 @@ func (s *LivreService) CreateLivre(input CreateLivreInput) (*models.Livre, error
 	}
 	livre := &models.Livre{
 		Titre:    input.Titre,
-		CodeISBN:  input.CodeISBN,
-		Auteurs:   input.Auteurs,
+		CodeISBN: input.CodeISBN,
+		Auteurs:  input.Auteurs,
 	}
 	return livre, s.livreRepo.Create(livre)
 }

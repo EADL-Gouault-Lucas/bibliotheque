@@ -58,5 +58,3 @@ func (m *AuthMiddleware) RequireBibliothecaire() gin.HandlerFunc {
 		c.Next()
 	}
 }
-
-

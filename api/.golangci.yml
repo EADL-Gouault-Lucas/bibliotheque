@@ -12,6 +12,13 @@ linters:
     - sqlclosecheck   # rows/statements SQL non fermés
     - noctx           # requêtes HTTP sans context
 
+  settings:
+    staticcheck:
+      checks:
+        - "all"
+        - "-ST1005"   # autorise les majuscules dans les error strings
+        - "-ST1000"
+
 formatters:
   enable:
     - gofmt           # formatage
