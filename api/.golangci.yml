@@ -1,0 +1,8 @@
+linters:
+  enable:
+    - gofmt
+    - govet
+    - errcheck
+    - gosec
+    - sqlclosecheck
+    - misspell

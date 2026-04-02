@@ -1,0 +1,86 @@
+package templates
+
+import (
+	"bibliotheque-front/internal/models"
+	"bibliotheque-front/internal/session"
+	"fmt"
+	"strconv"
+)
+
+templ Catalogue(livres []models.Livre, user *session.User, errMsg string) {
+	@Layout("Catalogue", user) {
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<h1 class="h3 mb-0">Catalogue des livres</h1>
+			if user != nil && user.IsBibliothecaire {
+				<a href="/livres/nouveau" class="btn btn-primary">+ Ajouter un livre</a>
+			}
+		</div>
+		if errMsg != "" {
+			@Alert("danger", errMsg)
+		}
+		if len(livres) == 0 {
+			<div class="alert alert-info">Aucun livre dans le catalogue pour le moment.</div>
+		}
+		<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+			for _, livre := range livres {
+				@livreCard(livre, user)
+			}
+		</div>
+	}
+}
+
+templ livreCard(livre models.Livre, user *session.User) {
+	<div class="col">
+		<div class="card h-100 shadow-sm">
+			<div class="card-header bg-white">
+				<h5 class="card-title mb-0">{ livre.Titre }</h5>
+				<small class="text-muted">ISBN : { livre.CodeISBN }</small>
+			</div>
+			<div class="card-body">
+				<p class="small mb-3">
+					<strong>Auteurs :</strong>
+					for i, a := range livre.Auteurs {
+						if i > 0 {
+							<span>, </span>
+						}
+						{ a }
+					}
+				</p>
+				<hr class="my-2"/>
+				<h6 class="mb-2">Exemplaires</h6>
+				if len(livre.Exemplaires) == 0 {
+					<p class="text-muted small mb-0">Aucun exemplaire enregistre.</p>
+				}
+				for _, ex := range livre.Exemplaires {
+					<div class="d-flex justify-content-between align-items-center py-1 border-bottom">
+						<div class="small">
+							<span class="font-monospace">{ ex.CodeBarre }</span>
+							<span class="ms-2 text-muted">Caution : <strong>{ fmt.Sprintf("%.2f", ex.Caution) }€</strong></span>
+							if ex.EstEmprunte {
+								<span class="badge bg-secondary ms-1">Indisponible</span>
+							} else {
+								<span class="badge bg-success ms-1">Disponible</span>
+							}
+						</div>
+						if user != nil && !user.IsBibliothecaire && !ex.EstEmprunte {
+							<form method="POST" action="/emprunts" class="ms-2 flex-shrink-0">
+								<input type="hidden" name="exemplaire_id" value={ strconv.FormatUint(uint64(ex.ID), 10) }/>
+								<button type="submit" class="btn btn-sm btn-success">Emprunter</button>
+							</form>
+						}
+					</div>
+				}
+			</div>
+			if user != nil && user.IsBibliothecaire {
+				<div class="card-footer bg-white">
+					<a
+						href={ templ.SafeURL(fmt.Sprintf("/livres/%d/exemplaires/nouveau", livre.ID)) }
+						class="btn btn-sm btn-outline-secondary w-100"
+					>
+						+ Ajouter un exemplaire
+					</a>
+				</div>
+			}
+		</div>
+	</div>
+}

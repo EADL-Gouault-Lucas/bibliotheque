@@ -1,0 +1,71 @@
+classDiagram
+    %% Classes du domaine
+    class Compte {
+        -int id
+        -string email
+        -string prenom
+        -string nom
+        -string mot_de_passe
+        -double caution_restante
+        -boolean isBibliothecaire
+        +isEnRetard() boolean
+        +getNomComplet() string
+    }
+
+    class Livre {
+        -int id
+        -string titre
+        -string code_barre
+        -string code_isbn
+        -List~string~ auteurs
+    }
+
+    class Exemplaire {
+        -int id
+        -string code_barre
+        -boolean est_emprunte
+        -double caution
+    }
+
+    class Emprunt {
+        -int id
+        -date dateEmprunt
+        -date dateLimite
+        -date dateRetour
+        -boolean rendu
+        +isEnRetard() boolean
+    }
+
+    %% Patron Builder
+    class CompteBuilder {
+        -Compte compte
+        +setId(id: int) CompteBuilder
+        +setEmail(email: string) CompteBuilder
+        +setPrenom(prenom: string) CompteBuilder
+        +setNom(nom: string) CompteBuilder
+        +setMotDePasse(motDePasse: string) CompteBuilder
+        +setCautionRestante(caution: double) CompteBuilder
+        +setIsBibliothecaire(flag: boolean) CompteBuilder
+        +build() Compte
+        +reset() void
+    }
+
+    class LivreBuilder {
+        -Livre livre
+        +setId(id: int) LivreBuilder
+        +setTitre(titre: string) LivreBuilder
+        +setCodeBarre(codeBarre: string) LivreBuilder
+        +setCodeIsbn(codeIsbn: string) LivreBuilder
+        +setAuteurs(auteurs: List~string~) LivreBuilder
+        +build() Livre
+        +reset() void
+    }
+
+    %% Relations Builder
+    CompteBuilder ..> Compte : creates
+    LivreBuilder ..> Livre : creates
+
+    %% Relations métier
+    Compte "1" -- "0..*" Emprunt : emprunts
+    Emprunt "1" -- "1" Exemplaire
+    Livre "1" -- "0..*" Exemplaire : exemplaires

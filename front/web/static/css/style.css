@@ -1,0 +1,32 @@
+/* Custom overrides on top of Bootstrap */
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.navbar-brand {
+    letter-spacing: 0.05em;
+}
+
+.font-monospace {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 0.85em;
+}
+
+.card {
+    border: none;
+    border-radius: 0.5rem;
+}
+
+.card-header {
+    border-radius: 0.5rem 0.5rem 0 0 !important;
+}
+
+.table th {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge {
+    font-size: 0.75em;
+}

@@ -1,0 +1,91 @@
+package templates
+
+import (
+	"bibliotheque-front/internal/models"
+	"bibliotheque-front/internal/session"
+	"fmt"
+	"strconv"
+	"time"
+)
+
+templ Retards(emprunts []models.Emprunt, user *session.User, successMsg string, rappelsEnvoyes int) {
+	@Layout("Gestion des retards", user) {
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<h1 class="h3 mb-0">Emprunts en retard</h1>
+			<form method="POST" action="/admin/rappels">
+				<button type="submit" class="btn btn-warning">
+					Envoyer rappels par mail
+				</button>
+			</form>
+		</div>
+		if successMsg != "" {
+			@Alert("success", successMsg)
+		}
+		if rappelsEnvoyes > 0 {
+			@Alert("info", fmt.Sprintf("%d rappel(s) envoye(s) aux emprunteurs en retard.", rappelsEnvoyes))
+		}
+		if len(emprunts) == 0 {
+			<div class="alert alert-success">Aucun emprunt en retard. Tout est en ordre !</div>
+		} else {
+			<div class="table-responsive">
+				<table class="table table-hover align-middle">
+					<thead class="table-dark">
+						<tr>
+							<th>Emprunteur</th>
+							<th>Livre</th>
+							<th>Exemplaire</th>
+							<th>Date limite</th>
+							<th>Retard</th>
+							<th>Caution</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						for _, e := range emprunts {
+							<tr>
+								<td>
+									if e.Compte != nil {
+										<div>{ e.Compte.Prenom } { e.Compte.Nom }</div>
+										<small class="text-muted">{ e.Compte.Email }</small>
+									} else {
+										<span class="text-muted">Compte #{ strconv.FormatUint(uint64(e.CompteID), 10) }</span>
+									}
+								</td>
+								<td>
+									if e.Exemplaire.Livre != nil {
+										<strong>{ e.Exemplaire.Livre.Titre }</strong>
+									} else {
+										<span class="text-muted">—</span>
+									}
+								</td>
+								<td>
+									<span class="font-monospace small">{ e.Exemplaire.CodeBarre }</span>
+								</td>
+								<td>{ e.DateLimite.Format("02/01/2006") }</td>
+								<td>
+									<span class="badge bg-danger">
+										{ strconv.Itoa(int(time.Since(e.DateLimite).Hours()/24)) } j de retard
+									</span>
+								</td>
+								<td>
+									<strong>{ fmt.Sprintf("%.2f", e.Exemplaire.Caution) }€</strong>
+								</td>
+								<td>
+									<form
+										method="POST"
+										action={ templ.SafeURL(fmt.Sprintf("/admin/emprunts/%d/retour", e.ID)) }
+									>
+										<button type="submit" class="btn btn-sm btn-success">
+											Marquer rendu
+										</button>
+									</form>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+			<p class="text-muted small">{ strconv.Itoa(len(emprunts)) } emprunt(s) en retard</p>
+		}
+	}
+}

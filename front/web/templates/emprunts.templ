@@ -1,0 +1,78 @@
+package templates
+
+import (
+	"bibliotheque-front/internal/models"
+	"bibliotheque-front/internal/session"
+	"fmt"
+	"strconv"
+)
+
+templ MesEmprunts(emprunts []models.Emprunt, user *session.User, successMsg string) {
+	@Layout("Mes emprunts", user) {
+		<h1 class="h3 mb-4">Mes emprunts</h1>
+		if successMsg != "" {
+			@Alert("success", successMsg)
+		}
+		if len(emprunts) == 0 {
+			<div class="alert alert-info">Vous n'avez aucun emprunt en cours.</div>
+		} else {
+			<div class="table-responsive">
+				<table class="table table-hover align-middle">
+					<thead class="table-dark">
+						<tr>
+							<th>Livre</th>
+							<th>Exemplaire</th>
+							<th>Emprunte le</th>
+							<th>A rendre avant le</th>
+							<th>Statut</th>
+						</tr>
+					</thead>
+					<tbody>
+						for _, e := range emprunts {
+							<tr>
+								<td>
+									if e.Exemplaire.Livre != nil {
+										<strong>{ e.Exemplaire.Livre.Titre }</strong>
+									} else {
+										<span class="text-muted">—</span>
+									}
+								</td>
+								<td>
+									<span class="font-monospace small">{ e.Exemplaire.CodeBarre }</span>
+								</td>
+								<td>{ e.DateEmprunt.Format("02/01/2006") }</td>
+								<td>{ e.DateLimite.Format("02/01/2006") }</td>
+								<td>
+									if e.Rendu {
+										<span class="badge bg-secondary">Rendu le { e.DateRetour.Format("02/01/2006") }</span>
+									} else if e.IsEnRetard() {
+										<span class="badge bg-danger">En retard</span>
+									} else {
+										<span class="badge bg-success">En cours</span>
+									}
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+			<p class="text-muted small">
+				Total : { strconv.Itoa(len(emprunts)) } emprunt(s) —
+				Caution immobilisee :
+				<strong>
+					{ fmt.Sprintf("%.2f", cautionTotal(emprunts)) }€
+				</strong>
+			</p>
+		}
+	}
+}
+
+func cautionTotal(emprunts []models.Emprunt) float64 {
+	var total float64
+	for _, e := range emprunts {
+		if !e.Rendu {
+			total += e.Exemplaire.Caution
+		}
+	}
+	return total
+}
