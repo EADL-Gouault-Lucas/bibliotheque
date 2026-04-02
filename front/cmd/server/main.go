@@ -62,7 +62,7 @@ func main() {
 	if port == "" {
 		port = "3000"
 	}
-	log.Println("Frontend demarre sur :" + port)
+	log.Printf("Frontend demarre sur :%s\n", port) // #nosec G706 -- port is a server-side env var
 	if err := r.Run(":" + port); err != nil {
 		log.Fatal("Serveur arrêté : ", err)
 	}

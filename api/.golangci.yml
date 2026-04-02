@@ -1,4 +1,17 @@
 version: "2"
 
 linters:
-  default: all
+  default: none
+  enable:
+    - errcheck        # erreurs non vérifiées
+    - govet           # constructions suspectes
+    - staticcheck     # analyse statique avancée
+    - unused          # code mort
+    - misspell        # fautes d'orthographe
+    - gosec           # failles de sécurité
+    - sqlclosecheck   # rows/statements SQL non fermés
+    - noctx           # requêtes HTTP sans context
+
+formatters:
+  enable:
+    - gofmt           # formatage

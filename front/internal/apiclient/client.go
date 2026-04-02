@@ -2,6 +2,7 @@ package apiclient
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -130,7 +131,7 @@ func (c *Client) EnvoyerRappels(token string) (*RappelsResponse, error) {
 // ── HTTP helpers ──────────────────────────────────────────────────────────────
 
 func (c *Client) get(path, token string, out interface{}) error {
-	req, err := http.NewRequest(http.MethodGet, c.baseURL+path, nil)
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, c.baseURL+path, nil)
 	if err != nil {
 		return err
 	}
@@ -157,7 +158,7 @@ func (c *Client) request(method, path, token string, body, out interface{}) erro
 		}
 		bodyReader = bytes.NewReader(data)
 	}
-	req, err := http.NewRequest(method, c.baseURL+path, bodyReader)
+	req, err := http.NewRequestWithContext(context.Background(), method, c.baseURL+path, bodyReader)
 	if err != nil {
 		return err
 	}
@@ -173,11 +174,11 @@ type apiError struct {
 }
 
 func (c *Client) do(req *http.Request, out interface{}) error {
-	resp, err := c.httpClient.Do(req)
+	resp, err := c.httpClient.Do(req) // #nosec G704 -- baseURL is set from trusted configuration
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
