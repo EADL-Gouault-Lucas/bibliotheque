@@ -44,11 +44,41 @@ jobs:
     name: Tests e2e
     runs-on: ubuntu-latest
     needs: build
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: bibliotheque_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: bibliotheque_test
+      API_URL: http://localhost:8080
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-front
+      - uses: ./.github/actions/setup-api
+      - name: Injecter le jeu de données
+        run: PGPASSWORD=postgres psql -h localhost -U postgres -d bibliotheque_test -f api/cmd/sql/seed.sql
+      - name: Démarrer l'API en arrière-plan
+        run: make run-api &
+        env:
+          PORT: 8080
+      - name: Attendre l'API
+        run: npx wait-on tcp:localhost:8080 --timeout 30000
       - name: Run e2e tests
-        run: cd front && go test -tags e2e -v ./...
+        run: cd front && go test -tags e2e -v ./tests/...
 
   # ── Audit des dépendances ──────────────────────────────────────────────────
   audit:
