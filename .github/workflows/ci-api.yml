@@ -17,6 +17,10 @@ jobs:
           cache-dependency-path: api/go.sum
       - name: Download dependencies
         run: cd api && go mod download
+      - name: Installation swag
+        run: go install github.com/swaggo/swag/cmd/swag@latest
+      - name: Génération des docs
+        run: make swag
       - name: Build
         run: make build-api
 
