@@ -6,6 +6,7 @@
         tidy tidy-api tidy-front \
         templ \
         swag swag-fmt \
+        db-sql db-clear \
         vuln vuln-api \
         docker-up docker-down docker-build docker-logs \
         clean
@@ -71,6 +72,12 @@ swag: ## Génère la documentation Swagger de l'API (docs/)
 
 swag-fmt: ## Formate les annotations Swagger
 	cd $(API_DIR) && swag fmt
+
+db-sql: ## Injecte le jeu de données de développement en base
+	docker exec -i bibliotheque-db psql -U postgres -d bibliotheque < $(API_DIR)/cmd/sql/seed.sql
+
+db-clear: ## Vide toutes les tables (remet les séquences à zéro)
+	docker exec -i bibliotheque-db psql -U postgres -d bibliotheque < $(API_DIR)/cmd/sql/truncate.sql
 
 # ── Audit sécurité ────────────────────────────────────────────────────────────
 vuln: vuln-api ## Audit des dépendances (govulncheck)
