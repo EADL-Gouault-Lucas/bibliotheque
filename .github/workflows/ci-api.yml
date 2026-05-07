@@ -37,6 +37,10 @@ jobs:
           cache-dependency-path: api/go.sum
       - name: Téléchargement dépendances
         run: cd api && go mod download
+      - name: Installation swag
+        run: go install github.com/swaggo/swag/cmd/swag@latest
+      - name: Génération des docs
+        run: make swag
       - name: Installation golangci-lint
         run: go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
       - name: Linter
@@ -58,6 +62,11 @@ jobs:
           cache-dependency-path: api/go.sum
       - name: Download dependencies
         run: go mod download
+      - name: Installation swag
+        run: go install github.com/swaggo/swag/cmd/swag@latest
+      - name: Génération des docs
+        working-directory: ${{ github.workspace }}
+        run: make swag
       - name: Run unit tests
         run: go test -tags unit -v -coverprofile=coverage.out ./...
       - name: Upload coverage
@@ -102,6 +111,11 @@ jobs:
           cache-dependency-path: api/go.sum
       - name: Download dependencies
         run: go mod download
+      - name: Installation swag
+        run: go install github.com/swaggo/swag/cmd/swag@latest
+      - name: Génération des docs
+        working-directory: ${{ github.workspace }}
+        run: make swag
       - name: Run database tests
         run: go test -tags db -v ./...
 
@@ -141,6 +155,11 @@ jobs:
           cache-dependency-path: api/go.sum
       - name: Download dependencies
         run: go mod download
+      - name: Installation swag
+        run: go install github.com/swaggo/swag/cmd/swag@latest
+      - name: Génération des docs
+        working-directory: ${{ github.workspace }}
+        run: make swag
       - name: Run e2e tests
         run: go test -tags e2e -v ./...
 
@@ -160,6 +179,11 @@ jobs:
           cache-dependency-path: api/go.sum
       - name: Download dependencies
         run: go mod download
+      - name: Installation swag
+        run: go install github.com/swaggo/swag/cmd/swag@latest
+      - name: Génération des docs
+        working-directory: ${{ github.workspace }}
+        run: make swag
       - name: govulncheck
         run: |
           go install golang.org/x/vuln/cmd/govulncheck@latest
