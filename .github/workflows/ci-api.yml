@@ -160,3 +160,25 @@ jobs:
         run: |
           go install golang.org/x/vuln/cmd/govulncheck@latest
           govulncheck ./...
+
+  docs-swagger:
+    name: Documentation Swagger
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: api/go.mod
+          cache-dependency-path: api/go.sum
+      - name: Téléchargement des dépendances
+        run: cd api && go mod download
+      - name: Installation swag
+        run: go install github.com/swaggo/swag/cmd/swag@latest
+      - name: Génération des docs
+        run: make swag
+      - name: Envoi des docs
+        uses: actions/upload-artifact@v4
+        with:
+          name: swagger-docs
+          path: api/docs/
