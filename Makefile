@@ -7,7 +7,7 @@
         templ \
         swag swag-fmt \
         db-sql db-clear \
-        vuln vuln-api \
+        vuln vuln-api vuln-front \
         docker-up docker-down docker-build docker-logs \
         clean
 
@@ -80,10 +80,13 @@ db-clear: ## Vide toutes les tables (remet les séquences à zéro)
 	docker exec -i bibliotheque-db psql -U postgres -d bibliotheque < $(API_DIR)/cmd/sql/truncate.sql
 
 # ── Audit sécurité ────────────────────────────────────────────────────────────
-vuln: vuln-api ## Audit des dépendances (govulncheck)
+vuln: vuln-api vuln-front ## Audit des dépendances (govulncheck)
 
 vuln-api: ## govulncheck sur l'API
 	cd $(API_DIR) && govulncheck ./...
+
+vuln-front: ## govulncheck sur le frontend
+	cd $(FRONT_DIR) && govulncheck ./...
 
 # ── Docker ────────────────────────────────────────────────────────────────────
 docker-build: ## Build les images Docker
