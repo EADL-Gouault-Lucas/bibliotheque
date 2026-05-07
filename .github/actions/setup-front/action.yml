@@ -1,0 +1,22 @@
+name: 'Setup Frontend'
+description: 'Setup Go, installe templ, télécharge les dépendances et génère les templates'
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-go@v5
+      with:
+        go-version-file: front/go.mod
+        cache-dependency-path: front/go.sum
+
+    - name: Installation templ CLI
+      shell: bash
+      run: go install github.com/a-h/templ/cmd/templ@latest
+
+    - name: Téléchargement des dépendances
+      shell: bash
+      run: cd front && go mod download
+
+    - name: Génération des templates
+      shell: bash
+      run: make templ
