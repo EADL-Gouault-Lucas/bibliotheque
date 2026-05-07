@@ -67,8 +67,7 @@ jobs:
         until pg_isready -h localhost -p 5432 -U postgres; do sleep 1; done
         PGPASSWORD=postgres psql -h localhost -U postgres -d bibliotheque -f api/cmd/sql/seed.sql
     - name: Wait for servers
-      run: |
-        npx wait-on http://localhost:8080/swagger/index.html http://localhost:3000 --timeout 30000
+      run: npx wait-on tcp:localhost:8080 tcp:localhost:3000 --timeout 60000
     - name: Install Playwright Browsers
       run: make playwright-install
     - name: Run Playwright tests
