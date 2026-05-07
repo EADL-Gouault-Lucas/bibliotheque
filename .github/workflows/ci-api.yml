@@ -37,10 +37,12 @@ jobs:
         with:
           go-version-file: api/go.mod
           cache-dependency-path: api/go.sum
-      - name: Lint
-        uses: golangci/golangci-lint-action@v6
-        with:
-          working-directory: api
+      - name: Téléchargement dépendances
+        run: go mod download
+      - name: Installation golangci-lint
+        run: go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
+      - name: Linter
+        run: golangci-lint run ./...
 
   # ── Tests unitaires ────────────────────────────────────────────────────────
   test-unit:
