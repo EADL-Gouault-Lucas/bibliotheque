@@ -264,9 +264,9 @@ func livreCard(livre models.Livre, user *session.User) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var10 templ.SafeURL
-				templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("/admin/livres/%d/exemplaires/nouveau", livre.ID)))
+			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("/admin/livres/%d/exemplaires/nouveau", livre.ID)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/catalogue.templ`, Line: 77, Col: 83}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/catalogue.templ`, Line: 77, Col: 89}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {

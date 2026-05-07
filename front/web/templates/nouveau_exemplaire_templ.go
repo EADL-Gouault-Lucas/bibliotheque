@@ -88,9 +88,9 @@ func NouvelExemplaire(livre models.Livre, user *session.User, errMsg string) tem
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var5 templ.SafeURL
-				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("/admin/livres/%d/exemplaires", livre.ID)))
+			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("/admin/livres/%d/exemplaires", livre.ID)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/nouveau_exemplaire.templ`, Line: 29, Col: 78}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/nouveau_exemplaire.templ`, Line: 29, Col: 84}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
