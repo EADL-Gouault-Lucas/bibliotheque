@@ -18,8 +18,15 @@ func NewEmpruntHandler(empruntSvc *services.EmpruntService) *EmpruntHandler {
 	return &EmpruntHandler{empruntSvc: empruntSvc}
 }
 
-// MesEmprunts - GET /api/v1/emprunts (utilisateur connecté)
-// R8
+// MesEmprunts godoc
+// @Summary     Mes emprunts en cours
+// @Tags        emprunts
+// @Produce     json
+// @Security    BearerAuth
+// @Success     200 {array}  models.Emprunt
+// @Failure     401 {object} map[string]string
+// @Failure     500 {object} map[string]string
+// @Router      /emprunts [get]
 func (h *EmpruntHandler) MesEmprunts(c *gin.Context) {
 	compteID := c.MustGet("compte_id").(uint)
 	emprunts, err := h.empruntSvc.MesEmprunts(compteID)
@@ -30,8 +37,19 @@ func (h *EmpruntHandler) MesEmprunts(c *gin.Context) {
 	c.JSON(http.StatusOK, emprunts)
 }
 
-// CreateEmprunt - POST /api/v1/emprunts (utilisateur connecté, non bibliothécaire)
-// R1, R2, R3, R4, R5, R8, R9
+// CreateEmprunt godoc
+// @Summary     Emprunter un exemplaire
+// @Tags        emprunts
+// @Accept      json
+// @Produce     json
+// @Security    BearerAuth
+// @Param       body body services.CreateEmpruntInput true "Exemplaire à emprunter"
+// @Success     201 {object} models.Emprunt
+// @Failure     400 {object} map[string]string
+// @Failure     401 {object} map[string]string
+// @Failure     422 {object} map[string]string
+// @Failure     500 {object} map[string]string
+// @Router      /emprunts [post]
 func (h *EmpruntHandler) CreateEmprunt(c *gin.Context) {
 	compteID := c.MustGet("compte_id").(uint)
 
@@ -59,8 +77,19 @@ func (h *EmpruntHandler) CreateEmprunt(c *gin.Context) {
 	c.JSON(http.StatusCreated, emprunt)
 }
 
-// RetourExemplaire - PUT /api/v1/emprunts/:id/retour (bibliothécaire)
-// R6, R10
+// RetourExemplaire godoc
+// @Summary     Retourner un exemplaire
+// @Tags        emprunts
+// @Produce     json
+// @Security    BearerAuth
+// @Param       id path int true "ID de l'emprunt"
+// @Success     200 {object} models.Emprunt
+// @Failure     400 {object} map[string]string
+// @Failure     401 {object} map[string]string
+// @Failure     403 {object} map[string]string
+// @Failure     409 {object} map[string]string
+// @Failure     500 {object} map[string]string
+// @Router      /emprunts/{id}/retour [put]
 func (h *EmpruntHandler) RetourExemplaire(c *gin.Context) {
 	empruntID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -81,7 +110,16 @@ func (h *EmpruntHandler) RetourExemplaire(c *gin.Context) {
 	c.JSON(http.StatusOK, emprunt)
 }
 
-// ListActifs - GET /api/v1/emprunts/actifs (bibliothécaire)
+// ListActifs godoc
+// @Summary     Lister tous les emprunts actifs
+// @Tags        emprunts
+// @Produce     json
+// @Security    BearerAuth
+// @Success     200 {array}  models.Emprunt
+// @Failure     401 {object} map[string]string
+// @Failure     403 {object} map[string]string
+// @Failure     500 {object} map[string]string
+// @Router      /emprunts/actifs [get]
 func (h *EmpruntHandler) ListActifs(c *gin.Context) {
 	emprunts, err := h.empruntSvc.ListActifs()
 	if err != nil {
@@ -91,8 +129,16 @@ func (h *EmpruntHandler) ListActifs(c *gin.Context) {
 	c.JSON(http.StatusOK, emprunts)
 }
 
-// ListRetards - GET /api/v1/emprunts/retards (bibliothécaire)
-// R7, R10
+// ListRetards godoc
+// @Summary     Lister les emprunts en retard
+// @Tags        emprunts
+// @Produce     json
+// @Security    BearerAuth
+// @Success     200 {array}  models.Emprunt
+// @Failure     401 {object} map[string]string
+// @Failure     403 {object} map[string]string
+// @Failure     500 {object} map[string]string
+// @Router      /emprunts/retards [get]
 func (h *EmpruntHandler) ListRetards(c *gin.Context) {
 	emprunts, err := h.empruntSvc.ListRetards()
 	if err != nil {
@@ -102,8 +148,16 @@ func (h *EmpruntHandler) ListRetards(c *gin.Context) {
 	c.JSON(http.StatusOK, emprunts)
 }
 
-// EnvoyerRappels - POST /api/v1/emprunts/rappels (bibliothécaire)
-// R21
+// EnvoyerRappels godoc
+// @Summary     Envoyer des rappels aux emprunteurs en retard
+// @Tags        emprunts
+// @Produce     json
+// @Security    BearerAuth
+// @Success     200 {object} map[string]interface{}
+// @Failure     401 {object} map[string]string
+// @Failure     403 {object} map[string]string
+// @Failure     500 {object} map[string]string
+// @Router      /emprunts/rappels [post]
 func (h *EmpruntHandler) EnvoyerRappels(c *gin.Context) {
 	comptes, err := h.empruntSvc.EnvoyerRappels()
 	if err != nil {

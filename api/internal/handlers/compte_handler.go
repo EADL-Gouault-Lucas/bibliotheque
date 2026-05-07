@@ -18,8 +18,17 @@ func NewCompteHandler(compteSvc *services.CompteService, tokenSvc *services.Toke
 	return &CompteHandler{compteSvc: compteSvc, tokenSvc: tokenSvc}
 }
 
-// Register - POST /api/v1/auth/register
-// R11, R12 : email unique, tous les champs obligatoires
+// Register godoc
+// @Summary     Créer un compte
+// @Tags        auth
+// @Accept      json
+// @Produce     json
+// @Param       body body services.CreateCompteInput true "Informations du nouveau compte"
+// @Success     201 {object} models.Compte
+// @Failure     400 {object} map[string]string
+// @Failure     409 {object} map[string]string
+// @Failure     500 {object} map[string]string
+// @Router      /auth/register [post]
 func (h *CompteHandler) Register(c *gin.Context) {
 	var input services.CreateCompteInput
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -40,8 +49,17 @@ func (h *CompteHandler) Register(c *gin.Context) {
 	c.JSON(http.StatusCreated, compte)
 }
 
-// Login - POST /api/v1/auth/login
-// R16 : même message d'erreur quel que soit le problème (anti-énumération)
+// Login godoc
+// @Summary     S'authentifier
+// @Tags        auth
+// @Accept      json
+// @Produce     json
+// @Param       body body services.LoginInput true "Identifiants"
+// @Success     200 {object} map[string]interface{}
+// @Failure     400 {object} map[string]string
+// @Failure     401 {object} map[string]string
+// @Failure     500 {object} map[string]string
+// @Router      /auth/login [post]
 func (h *CompteHandler) Login(c *gin.Context) {
 	var input services.LoginInput
 	if err := c.ShouldBindJSON(&input); err != nil {

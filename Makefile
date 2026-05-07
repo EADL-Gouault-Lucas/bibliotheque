@@ -5,7 +5,7 @@
         lint lint-api lint-front \
         tidy tidy-api tidy-front \
         templ \
-        swag \
+        swag swag-fmt \
         vuln vuln-api \
         docker-up docker-down docker-build docker-logs \
         clean
@@ -66,8 +66,11 @@ tidy-front: ## go mod tidy — Frontend
 templ: ## Génère les fichiers Go depuis les templates .templ
 	cd $(FRONT_DIR) && templ generate
 
-swag: ## Génère la documentation Swagger de l'API
-	cd $(API_DIR) && swag init -g cmd/server/main.go
+swag: ## Génère la documentation Swagger de l'API (docs/)
+	cd $(API_DIR) && swag init -g cmd/server/main.go -o docs/ --parseInternal
+
+swag-fmt: ## Formate les annotations Swagger
+	cd $(API_DIR) && swag fmt
 
 # ── Audit sécurité ────────────────────────────────────────────────────────────
 vuln: vuln-api ## Audit des dépendances (govulncheck)
@@ -91,4 +94,5 @@ docker-logs: ## Affiche les logs en temps réel
 # ── Nettoyage ─────────────────────────────────────────────────────────────────
 clean: ## Supprime les artefacts générés
 	cd $(API_DIR) && rm -f coverage.out
+	cd $(API_DIR) && rm -rf docs/
 	cd $(FRONT_DIR) && find . -name '*_templ.go' -delete

@@ -7,15 +7,18 @@ import (
 )
 
 type Emprunt struct {
-	gorm.Model
-	DateEmprunt  time.Time  `json:"date_emprunt"  gorm:"not null"`
-	DateLimite   time.Time  `json:"date_limite"   gorm:"not null"`
-	DateRetour   *time.Time `json:"date_retour"`
-	Rendu        bool       `json:"rendu"         gorm:"default:false"`
-	CompteID     uint       `json:"compte_id"     gorm:"not null"`
-	Compte       *Compte    `json:"compte,omitempty" gorm:"foreignKey:CompteID"`
-	ExemplaireID uint       `json:"exemplaire_id" gorm:"not null"`
-	Exemplaire   Exemplaire `json:"exemplaire,omitempty"`
+	ID           uint           `json:"id"         gorm:"primarykey;autoIncrement"`
+	CreatedAt    time.Time      `json:"created_at"`
+	UpdatedAt    time.Time      `json:"updated_at"`
+	DeletedAt    gorm.DeletedAt `json:"-"          gorm:"index" swaggerignore:"true"`
+	DateEmprunt  time.Time      `json:"date_emprunt"  gorm:"not null"`
+	DateLimite   time.Time      `json:"date_limite"   gorm:"not null"`
+	DateRetour   *time.Time     `json:"date_retour"`
+	Rendu        bool           `json:"rendu"         gorm:"default:false"`
+	CompteID     uint           `json:"compte_id"     gorm:"not null"`
+	Compte       *Compte        `json:"compte,omitempty" gorm:"foreignKey:CompteID"`
+	ExemplaireID uint           `json:"exemplaire_id" gorm:"not null"`
+	Exemplaire   Exemplaire     `json:"exemplaire,omitempty"`
 }
 
 func (e *Emprunt) IsEnRetard() bool {

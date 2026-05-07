@@ -8,31 +8,44 @@ Application de gestion de bibliothèque composée d'une API REST (Go/Gin) et d'u
 
 ### Prérequis
 
-- [Go 1.25.8+](https://go.dev/dl/)
+- [Go 1.25.9+](https://go.dev/dl/)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 - [golangci-lint](https://golangci-lint.run/usage/install/)
 - [templ](https://templ.guide/quick-start/installation)
+- [swag](https://github.com/swaggo/swag) — `go install github.com/swaggo/swag/cmd/swag@latest`
 
-### Mode développement local
+### Lancer le projet complet
 
 ```bash
-# 1. Démarrer la base de données
-make dev-db
+# 1. Générer les fichiers depuis les templates .templ
+make templ
 
-# 2. Lancer l'API (dans un terminal)
+# 2. Générer la documentation Swagger
+make swag
+
+# 3. Démarrer la base de données
+make docker-up
+
+# 4. Lancer l'API (dans un terminal)
 make run-api
 
-# 3. Lancer le frontend (dans un autre terminal)
+# 5. Lancer le frontend (dans un autre terminal)
 make run-front
 ```
 
-### Mode Docker complet
+Le projet est ensuite accessible sur :
+
+| Service | URL |
+|---|---|
+| **Frontend** | http://localhost:3000 |
+| **API** | http://localhost:8080 |
+| **Swagger UI** | http://localhost:8080/swagger/index.html |
+| **Base de données** | `localhost:5432` |
+
+Pour arrêter :
 
 ```bash
-make docker-build   # Build les images
-make docker-up      # Démarre tous les services
-make docker-down    # Arrête tout
-make docker-logs    # Affiche les logs
+make docker-down
 ```
 
 ---
@@ -68,18 +81,4 @@ Port:     5432
 User:     postgres
 Password: postgres
 Database: bibliotheque
-```
-
----
-
-## Commandes utiles
-
-```bash
-make help        # Liste toutes les commandes disponibles
-make lint        # Lint (golangci-lint) sur API + frontend
-make test        # Tests unitaires
-make vuln        # Audit de sécurité (govulncheck)
-make tidy        # go mod tidy sur les deux modules
-make templ       # Régénère les fichiers depuis les templates .templ
-make swag        # Régénère la documentation Swagger
 ```

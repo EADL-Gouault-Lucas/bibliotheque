@@ -18,7 +18,13 @@ func NewLivreHandler(livreSvc *services.LivreService) *LivreHandler {
 	return &LivreHandler{livreSvc: livreSvc}
 }
 
-// ListLivres - GET /api/v1/livres (public)
+// ListLivres godoc
+// @Summary     Lister tous les livres
+// @Tags        livres
+// @Produce     json
+// @Success     200 {array}  models.Livre
+// @Failure     500 {object} map[string]string
+// @Router      /livres [get]
 func (h *LivreHandler) ListLivres(c *gin.Context) {
 	livres, err := h.livreSvc.ListLivres()
 	if err != nil {
@@ -28,8 +34,20 @@ func (h *LivreHandler) ListLivres(c *gin.Context) {
 	c.JSON(http.StatusOK, livres)
 }
 
-// CreateLivre - POST /api/v1/livres (bibliothécaire)
-// R10, R17
+// CreateLivre godoc
+// @Summary     Créer un livre
+// @Tags        livres
+// @Accept      json
+// @Produce     json
+// @Security    BearerAuth
+// @Param       body body services.CreateLivreInput true "Données du livre"
+// @Success     201 {object} models.Livre
+// @Failure     400 {object} map[string]string
+// @Failure     401 {object} map[string]string
+// @Failure     403 {object} map[string]string
+// @Failure     422 {object} map[string]string
+// @Failure     500 {object} map[string]string
+// @Router      /livres [post]
 func (h *LivreHandler) CreateLivre(c *gin.Context) {
 	var input services.CreateLivreInput
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -50,7 +68,16 @@ func (h *LivreHandler) CreateLivre(c *gin.Context) {
 	c.JSON(http.StatusCreated, livre)
 }
 
-// GetLivre - GET /api/v1/livres/:id (public)
+// GetLivre godoc
+// @Summary     Obtenir un livre par son ID
+// @Tags        livres
+// @Produce     json
+// @Param       id path int true "ID du livre"
+// @Success     200 {object} models.Livre
+// @Failure     400 {object} map[string]string
+// @Failure     404 {object} map[string]string
+// @Failure     500 {object} map[string]string
+// @Router      /livres/{id} [get]
 func (h *LivreHandler) GetLivre(c *gin.Context) {
 	livreID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -70,8 +97,21 @@ func (h *LivreHandler) GetLivre(c *gin.Context) {
 	c.JSON(http.StatusOK, livre)
 }
 
-// AddExemplaire - POST /api/v1/livres/:id/exemplaires (bibliothécaire)
-// R10, R19, R20
+// AddExemplaire godoc
+// @Summary     Ajouter un exemplaire à un livre
+// @Tags        livres
+// @Accept      json
+// @Produce     json
+// @Security    BearerAuth
+// @Param       id   path int true "ID du livre"
+// @Param       body body services.AddExemplaireInput true "Données de l'exemplaire"
+// @Success     201 {object} models.Exemplaire
+// @Failure     400 {object} map[string]string
+// @Failure     401 {object} map[string]string
+// @Failure     403 {object} map[string]string
+// @Failure     404 {object} map[string]string
+// @Failure     500 {object} map[string]string
+// @Router      /livres/{id}/exemplaires [post]
 func (h *LivreHandler) AddExemplaire(c *gin.Context) {
 	livreID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {

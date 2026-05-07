@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	_ "bibliotheque-api/docs"
 	"bibliotheque-api/internal/handlers"
 	"bibliotheque-api/internal/models"
 	"bibliotheque-api/internal/repository"
@@ -11,6 +12,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -20,6 +23,9 @@ import (
 // @description     API REST pour la gestion d'une bibliothèque
 // @host            localhost:8080
 // @BasePath        /api/v1
+// @securityDefinitions.apikey BearerAuth
+// @in              header
+// @name            Authorization
 func main() {
 	_ = godotenv.Load(".env.local") // priorité locale, ne fail pas si absent
 	_ = godotenv.Load()             // valeurs par défaut depuis .env
@@ -69,6 +75,7 @@ func main() {
 	empruntHandler := handlers.NewEmpruntHandler(empruntSvc)
 
 	r := gin.Default()
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	v1 := r.Group("/api/v1")
 
 	// Auth (public)
