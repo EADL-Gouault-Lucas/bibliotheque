@@ -112,6 +112,10 @@ jobs:
         with:
           go-version-file: front/go.mod
           cache-dependency-path: front/go.sum
+      - name: Installer Templ
+        run: go install github.com/a-h/templ/cmd/templ@latest
+      - name: Générer les templates
+        run: templ generate
       - name: Download dependencies
         run: go mod download
       - name: govulncheck
