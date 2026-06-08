@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  # ── Orchestration API ───────────────────────────────────────────────────────
+  ci-api:
+    name: CI - API
+    uses: ./.github/workflows/ci-api.yml
+
+  # ── Orchestration Frontend ──────────────────────────────────────────────────
+  ci-front:
+    name: CI - Frontend
+    uses: ./.github/workflows/ci-front.yml
+
+  # ── Tests Playwright (dépend des deux CI) ──────────────────────────────────
+  playwright:
+    name: Tests Playwright
+    needs: [ci-api, ci-front]
+    uses: ./.github/workflows/playwright.yml

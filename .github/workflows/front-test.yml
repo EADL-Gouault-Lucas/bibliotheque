@@ -1,0 +1,56 @@
+name: Frontend - Tests
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  # ── Tests unitaires ─────────────────────────────────────────────────────────
+  unit:
+    name: Tests unitaires
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-front
+      - name: Tests unitaires
+        run: make test-front-unit
+
+  # ── Tests e2e ───────────────────────────────────────────────────────────────
+  e2e:
+    name: Tests e2e
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: bibliotheque_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: bibliotheque_test
+      API_URL: http://localhost:8080
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-front
+      - uses: ./.github/actions/setup-api
+      - name: Injecter le jeu de données
+        run: make seed-test-db
+      - name: Démarrer l'API en arrière-plan
+        run: make run-api &
+        env:
+          PORT: 8080
+      - name: Attendre l'API
+        run: npx wait-on tcp:localhost:8080 --timeout 30000
+      - name: Tests e2e
+        run: make test-front-e2e

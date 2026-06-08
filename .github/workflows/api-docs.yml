@@ -1,0 +1,18 @@
+name: API - Documentation Swagger
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  docs:
+    name: Documentation Swagger
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-api
+      - name: Upload docs Swagger
+        uses: actions/upload-artifact@v4
+        with:
+          name: swagger-docs
+          path: api/docs/

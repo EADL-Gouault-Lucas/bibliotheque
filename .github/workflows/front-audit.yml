@@ -1,0 +1,17 @@
+name: Frontend - Audit sécurité
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  audit:
+    name: Audit des dépendances
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-front
+      - name: Installation govulncheck
+        run: go install golang.org/x/vuln/cmd/govulncheck@latest
+      - name: Audit
+        run: make vuln-front

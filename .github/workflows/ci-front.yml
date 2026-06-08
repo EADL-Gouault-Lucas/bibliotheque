@@ -1,94 +1,29 @@
-name: CI — Frontend
+name: CI - Frontend
 
 on:
-  push:
+  workflow_call:
   workflow_dispatch:
 
 jobs:
-  # ── Build ──────────────────────────────────────────────────────────────────
+  # ── Build ───────────────────────────────────────────────────────────────────
   build:
     name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-front
-      - name: Build
-        run: make build-front
+    uses: ./.github/workflows/front-build.yml
 
-  # ── Lint ───────────────────────────────────────────────────────────────────
+  # ── Lint ────────────────────────────────────────────────────────────────────
   lint:
     name: Lint
-    runs-on: ubuntu-latest
     needs: build
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-front
-      - name: Installation golangci-lint
-        run: go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
-      - name: Lint
-        run: make lint-front
+    uses: ./.github/workflows/front-lint.yml
 
-  # ── Tests unitaires ────────────────────────────────────────────────────────
-  test-unit:
-    name: Tests unitaires
-    runs-on: ubuntu-latest
+  # ── Tests ───────────────────────────────────────────────────────────────────
+  tests:
+    name: Tests
     needs: build
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-front
-      - name: Run unit tests
-        run: cd front && go test -tags unit -v ./...
+    uses: ./.github/workflows/front-test.yml
 
-  # ── Tests e2e ──────────────────────────────────────────────────────────────
-  test-e2e:
-    name: Tests e2e
-    runs-on: ubuntu-latest
-    needs: build
-    services:
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: bibliotheque_test
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    env:
-      DB_HOST: localhost
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: bibliotheque_test
-      API_URL: http://localhost:8080
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-front
-      - uses: ./.github/actions/setup-api
-      - name: Injecter le jeu de données
-        run: PGPASSWORD=postgres psql -h localhost -U postgres -d bibliotheque_test -f api/cmd/sql/seed.sql
-      - name: Démarrer l'API en arrière-plan
-        run: make run-api &
-        env:
-          PORT: 8080
-      - name: Attendre l'API
-        run: npx wait-on tcp:localhost:8080 --timeout 30000
-      - name: Run e2e tests
-        run: cd front && go test -tags e2e -v ./tests/...
-
-  # ── Audit des dépendances ──────────────────────────────────────────────────
+  # ── Audit sécurité ──────────────────────────────────────────────────────────
   audit:
-    name: Audit des dépendances
-    runs-on: ubuntu-latest
+    name: Audit
     needs: build
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-front
-      - name: Installation govulncheck
-        run: go install golang.org/x/vuln/cmd/govulncheck@latest
-      - name: Audit
-        run: make vuln-front
+    uses: ./.github/workflows/front-audit.yml

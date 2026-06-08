@@ -1,145 +1,35 @@
-name: CI — API
+name: CI - API
 
 on:
-  push:
+  workflow_call:
   workflow_dispatch:
 
 jobs:
-  # ── Build ──────────────────────────────────────────────────────────────────
+  # ── Build ───────────────────────────────────────────────────────────────────
   build:
     name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-api
-      - name: Build
-        run: make build-api
+    uses: ./.github/workflows/api-build.yml
 
-  # ── Lint ───────────────────────────────────────────────────────────────────
+  # ── Lint ────────────────────────────────────────────────────────────────────
   lint:
     name: Lint
-    runs-on: ubuntu-latest
     needs: build
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-api
-      - name: Installation golangci-lint
-        run: go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
-      - name: Linter
-        run: make lint-api
+    uses: ./.github/workflows/api-lint.yml
 
-  # ── Tests unitaires ────────────────────────────────────────────────────────
-  test-unit:
-    name: Tests unitaires
-    runs-on: ubuntu-latest
+  # ── Tests ───────────────────────────────────────────────────────────────────
+  tests:
+    name: Tests
     needs: build
-    defaults:
-      run:
-        working-directory: api
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-api
-      - name: Run unit tests
-        run: go test -tags unit -v -coverprofile=coverage.out ./...
-      - name: Upload coverage
-        uses: actions/upload-artifact@v4
-        with:
-          name: api-coverage
-          path: api/coverage.out
+    uses: ./.github/workflows/api-test.yml
 
-  # ── Tests base de données ──────────────────────────────────────────────────
-  test-db:
-    name: Tests base de données
-    runs-on: ubuntu-latest
-    needs: build
-    services:
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: bibliotheque_test
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    defaults:
-      run:
-        working-directory: api
-    env:
-      DB_HOST: localhost
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: bibliotheque_test
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-api
-      - name: Run database tests
-        run: go test -tags db -v ./...
-
-  # ── Tests e2e ──────────────────────────────────────────────────────────────
-  test-e2e:
-    name: Tests e2e
-    runs-on: ubuntu-latest
-    needs: build
-    services:
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: bibliotheque_test
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    defaults:
-      run:
-        working-directory: api
-    env:
-      DB_HOST: localhost
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: bibliotheque_test
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-api
-      - name: Run e2e tests
-        run: go test -tags e2e -v ./...
-
-  # ── Audit des dépendances ──────────────────────────────────────────────────
+  # ── Audit sécurité ──────────────────────────────────────────────────────────
   audit:
-    name: Audit des dépendances
-    runs-on: ubuntu-latest
+    name: Audit
     needs: build
-    defaults:
-      run:
-        working-directory: api
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-api
-      - name: govulncheck
-        run: |
-          go install golang.org/x/vuln/cmd/govulncheck@latest
-          govulncheck ./...
+    uses: ./.github/workflows/api-audit.yml
 
-  docs-swagger:
+  # ── Documentation Swagger ───────────────────────────────────────────────────
+  docs:
     name: Documentation Swagger
-    runs-on: ubuntu-latest
     needs: build
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-api
-      - name: Envoi des docs
-        uses: actions/upload-artifact@v4
-        with:
-          name: swagger-docs
-          path: api/docs/
+    uses: ./.github/workflows/api-docs.yml

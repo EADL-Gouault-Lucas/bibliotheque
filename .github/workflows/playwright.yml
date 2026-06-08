@@ -1,13 +1,14 @@
-name: Playwright Tests
+name: Tests Playwright
+
 on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+  workflow_call:
+  workflow_dispatch:
+
 jobs:
-  test:
-    timeout-minutes: 60
+  playwright:
+    name: Tests Playwright
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     services:
       postgres:
         image: postgres:16-alpine
@@ -30,51 +31,34 @@ jobs:
       DB_NAME: bibliotheque
       API_URL: http://localhost:8080
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    - uses: actions/setup-go@v5
-      with:
-        go-version-file: api/go.mod
-        cache-dependency-path: api/go.sum
-    - name: Install Go dependencies
-      run: |
-        cd api && go mod download
-        cd ../front && go mod download
-    - name: Install tools (swag, templ)
-      run: |
-        go install github.com/swaggo/swag/cmd/swag@latest
-        go install github.com/a-h/templ/cmd/templ@latest
-    - name: Generate (swagger + templ)
-      run: |
-        make swag
-        make templ
-    - name: Build API and frontend
-      run: |
-        make build-api
-        make build-front
-    - name: Start API
-      run: make run-api &
-      env:
-        PORT: 8080
-    - name: Start frontend
-      run: make run-front &
-      env:
-        PORT: 3000
-    - name: Seed database
-      run: |
-        until pg_isready -h localhost -p 5432 -U postgres; do sleep 1; done
-        PGPASSWORD=postgres psql -h localhost -U postgres -d bibliotheque -f api/cmd/sql/seed.sql
-    - name: Wait for servers
-      run: npx wait-on tcp:localhost:8080 tcp:localhost:3000 --timeout 60000
-    - name: Install Playwright Browsers
-      run: make playwright-install
-    - name: Run Playwright tests
-      run: make playwright-test
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - uses: ./.github/actions/setup-api
+      - uses: ./.github/actions/setup-front
+      - name: Build API et frontend
+        run: make build
+      - name: Injecter le jeu de données
+        run: make seed-test-db
+      - name: Démarrer l'API en arrière-plan
+        run: make run-api &
+        env:
+          PORT: 8080
+      - name: Démarrer le frontend en arrière-plan
+        run: make run-front &
+        env:
+          PORT: 3000
+      - name: Attendre les serveurs
+        run: npx wait-on tcp:localhost:8080 tcp:localhost:3000 --timeout 60000
+      - name: Installer Playwright et les navigateurs
+        run: make playwright-install
+      - name: Tests Playwright
+        run: make playwright-test
+      - name: Upload du rapport Playwright
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
