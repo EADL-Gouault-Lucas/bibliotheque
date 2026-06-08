@@ -3,7 +3,7 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-RUN go install github.com/a-h/templ/cmd/templ@latest && templ generate
+RUN go install github.com/a-h/templ/cmd/templ@v0.3.1001 && templ generate
 RUN go build -o server ./cmd/server
 
 FROM alpine:3.19

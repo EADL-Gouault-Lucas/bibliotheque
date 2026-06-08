@@ -11,7 +11,7 @@ runs:
 
     - name: Installation templ CLI
       shell: bash
-      run: go install github.com/a-h/templ/cmd/templ@latest
+      run: go install github.com/a-h/templ/cmd/templ@v0.3.1001
 
     - name: Téléchargement des dépendances
       shell: bash
