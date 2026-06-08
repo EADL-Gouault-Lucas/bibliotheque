@@ -8,9 +8,6 @@ jobs:
   audit:
     name: Audit des dépendances
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: api
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-api
