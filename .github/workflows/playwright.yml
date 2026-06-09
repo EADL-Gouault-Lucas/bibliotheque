@@ -35,24 +35,26 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
-      - uses: ./.github/actions/setup-api
       - uses: ./.github/actions/setup-front
-      - name: Build API et frontend
-        run: make build
-      - name: Injecter le jeu de données
-        run: make seed-test-db
+      - uses: ./.github/actions/setup-api
+        with:
+          cache: 'false'
+      - name: Installer Playwright et les navigateurs
+        run: make playwright-install
       - name: Démarrer l'API en arrière-plan
         run: make run-api &
         env:
           PORT: 8080
+      - name: Attendre l'API
+        run: npx wait-on tcp:localhost:8080 --timeout 60000
+      - name: Injecter le jeu de données
+        run: make seed-test-db
       - name: Démarrer le frontend en arrière-plan
         run: make run-front &
         env:
           PORT: 3000
-      - name: Attendre les serveurs
-        run: npx wait-on tcp:localhost:8080 tcp:localhost:3000 --timeout 60000
-      - name: Installer Playwright et les navigateurs
-        run: make playwright-install
+      - name: Attendre le frontend
+        run: npx wait-on tcp:localhost:3000 --timeout 60000
       - name: Tests Playwright
         run: make playwright-test
       - name: Upload du rapport Playwright
