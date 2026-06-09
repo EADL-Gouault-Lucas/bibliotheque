@@ -89,7 +89,7 @@ jobs:
       - name: Afficher le rapport dans le résumé
         if: always()
         run: |
-          echo "## Trivy — bibliotheque-${{ matrix.service }}" >> $GITHUB_STEP_SUMMARY
+          echo "## Trivy - bibliotheque-${{ matrix.service }}" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           cat trivy-report.txt >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY

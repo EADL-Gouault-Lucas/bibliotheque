@@ -8,13 +8,38 @@ Application de gestion de bibliothèque composée d'une API REST (Go/Gin) et d'u
 
 ### Prérequis
 
-- [Go 1.25.9+](https://go.dev/dl/)
+- [Go 1.25.11+](https://go.dev/dl/)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 - [golangci-lint](https://golangci-lint.run/usage/install/)
-- [templ](https://templ.guide/quick-start/installation)
+- [templ](https://templ.guide/quick-start/installation) — `go install github.com/a-h/templ/cmd/templ@latest`
 - [swag](https://github.com/swaggo/swag) — `go install github.com/swaggo/swag/cmd/swag@latest`
 
-### Lancer le projet complet
+### Lancer le projet avec Docker
+
+```bash
+# 1. Démarrer tous les services (API, frontend, base de données)
+make docker-up
+
+# 2. Injecter les données de démonstration
+make db-sql
+```
+
+Le projet est ensuite accessible sur :
+
+| Service | URL |
+|---|---|
+| **Frontend** | http://localhost:3000 |
+| **API** | http://localhost:8080 |
+| **Swagger UI** | http://localhost:8080/swagger/index.html |
+| **Base de données** | `localhost:5432` |
+
+Pour arrêter :
+
+```bash
+make docker-down
+```
+
+### Lancer le projet en local (développement)
 
 ```bash
 # 1. Générer les fichiers depuis les templates .templ
@@ -33,45 +58,11 @@ make run-api
 make run-front
 ```
 
-Le projet est ensuite accessible sur :
-
-| Service | URL |
-|---|---|
-| **Frontend** | http://localhost:3000 |
-| **API** | http://localhost:8080 |
-| **Swagger UI** | http://localhost:8080/swagger/index.html |
-| **Base de données** | `localhost:5432` |
-
-Pour arrêter :
-
-```bash
-make docker-down
-```
-
 ---
 
-## URLs d'accès
+## Endpoints API
 
-| Service | Local | Docker |
-|---|---|---|
-| **Frontend** | http://localhost:3000 | http://localhost:3000 |
-| **API** | http://localhost:8080 | http://localhost:8080 |
-| **Base de données** | `localhost:5432` | `localhost:5432` |
-
-### Endpoints API
-
-| Méthode | URL | Description |
-|---|---|---|
-| `POST` | http://localhost:8080/api/v1/auth/register | Créer un compte |
-| `POST` | http://localhost:8080/api/v1/auth/login | Se connecter |
-| `GET` | http://localhost:8080/api/v1/livres | Liste des livres |
-| `POST` | http://localhost:8080/api/v1/livres | Ajouter un livre *(bibliothécaire)* |
-| `POST` | http://localhost:8080/api/v1/livres/:id/exemplaires | Ajouter un exemplaire *(bibliothécaire)* |
-| `GET` | http://localhost:8080/api/v1/emprunts | Mes emprunts |
-| `POST` | http://localhost:8080/api/v1/emprunts | Créer un emprunt |
-| `PUT` | http://localhost:8080/api/v1/emprunts/:id/retour | Retourner un exemplaire *(bibliothécaire)* |
-| `GET` | http://localhost:8080/api/v1/emprunts/retards | Liste des retards *(bibliothécaire)* |
-| `POST` | http://localhost:8080/api/v1/emprunts/rappels | Envoyer les rappels *(bibliothécaire)* |
+La documentation complète est disponible via Swagger UI au démarrage.
 
 ### Base de données
 
@@ -82,3 +73,13 @@ User:     postgres
 Password: postgres
 Database: bibliotheque
 ```
+
+---
+
+### Images Docker
+
+Les images sont publiées sur GitHub Container Registry à chaque release.
+
+### Artefacts produits
+
+Les résultats du scan Trivy sont disponibles dans l'onglet **Security → Code scanning** du dépôt, et le tableau récapitulatif dans l'onglet **Summary** de chaque run de publication.
