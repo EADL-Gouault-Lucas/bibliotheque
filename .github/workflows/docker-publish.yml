@@ -1,13 +1,19 @@
 name: Publication Docker
 
 on:
-  push:
-    branches: [main]
+  workflow_call:
+    inputs:
+      version:
+        description: "Tag de version"
+        required: false
+        type: string
+        default: ''
   workflow_dispatch:
 
 permissions:
   contents: read
   packages: write
+  security-events: write
 
 jobs:
   publish:
@@ -38,6 +44,7 @@ jobs:
           images: ghcr.io/${{ github.repository_owner }}/bibliotheque-${{ matrix.service }}
           tags: |
             type=raw,value=latest
+            type=raw,value=${{ inputs.version }},enable=${{ inputs.version != '' }}
             type=sha,prefix=
 
       - name: Build et push
@@ -47,3 +54,12 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Scan de sécurité Trivy
+        uses: aquasecurity/trivy-action@0.36.0
+        with:
+          image-ref: ghcr.io/${{ github.repository_owner }}/bibliotheque-${{ matrix.service }}:latest
+          format: sarif
+          output: trivy-results.sarif
+          exit-code: '1'
+          severity: CRITICAL

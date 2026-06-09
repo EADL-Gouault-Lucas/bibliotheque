@@ -5,6 +5,11 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: write
+  packages: write
+  security-events: write
+
 jobs:
   # ── Orchestration API ───────────────────────────────────────────────────────
   ci-api:
@@ -16,3 +21,17 @@ jobs:
     name: CI - Frontend
     uses: ./.github/workflows/ci-front.yml
 
+  # Release et publication docker si les tests sont passés
+  release:
+    name: Release
+    needs: [ci-api, ci-front]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    uses: ./.github/workflows/release.yml
+
+  docker-publish:
+    name: Publication Docker
+    needs: [ci-api, ci-front, release]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    uses: ./.github/workflows/docker-publish.yml
+    with:
+      version: ${{ needs.release.outputs.tag }}

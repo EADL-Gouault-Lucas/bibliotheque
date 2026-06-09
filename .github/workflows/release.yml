@@ -1,8 +1,12 @@
 name: Release
 
 on:
-  push:
-    branches: [main]
+  workflow_call:
+    outputs:
+      tag:
+        description: "Tag de la release"
+        value: ${{ jobs.release.outputs.tag }}
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -11,6 +15,8 @@ jobs:
   release:
     name: Créer une release
     runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.version.outputs.tag }}
     steps:
       - uses: actions/checkout@v6.0.3
 

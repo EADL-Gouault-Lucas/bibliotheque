@@ -10,7 +10,7 @@
         swag swag-fmt \
         db-sql db-clear seed-test-db \
         vuln vuln-api vuln-front \
-        docker-up docker-down docker-build docker-logs \
+        docker-up docker-down docker-logs \
         clean
 
 # ── Variables ─────────────────────────────────────────────────────────────────
@@ -108,9 +108,6 @@ vuln-front: ## govulncheck sur le frontend
 	cd $(FRONT_DIR) && govulncheck ./...
 
 # ── Docker ────────────────────────────────────────────────────────────────────
-docker-build: ## Build les images Docker
-	docker compose build
-
 docker-up: ## Démarre tous les services Docker en arrière-plan
 	docker compose up -d
 
