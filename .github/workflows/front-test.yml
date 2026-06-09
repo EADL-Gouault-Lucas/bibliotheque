@@ -44,6 +44,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-front
       - uses: ./.github/actions/setup-api
+        with:
+          cache: 'false'
       - name: Démarrer l'API en arrière-plan
         run: make run-api &
         env:

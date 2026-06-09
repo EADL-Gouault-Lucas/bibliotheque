@@ -1,6 +1,11 @@
 name: 'Setup API'
 description: 'Setup Go, télécharge les dépendances, installe swag et génère les docs Swagger'
 
+inputs:
+  cache:
+    description: 'Activer le cache Go (désactiver si setup-front a déjà restauré le cache)'
+    default: 'true'
+
 runs:
   using: composite
   steps:
@@ -8,6 +13,7 @@ runs:
       with:
         go-version-file: api/go.mod
         cache-dependency-path: api/go.sum
+        cache: ${{ inputs.cache }}
 
     - name: Téléchargement des dépendances
       shell: bash
