@@ -67,4 +67,29 @@ jobs:
           output: trivy-results.sarif
           exit-code: '0'
           ignore-unfixed: true
-          severity: CRITICAL
+          severity: CRITICAL,HIGH
+
+      - name: Upload résultats
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results.sarif
+          category: docker-${{ matrix.service }}
+
+      - name: Scan de sécurité Trivy (report)
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ghcr.io/${{ steps.owner.outputs.name }}/bibliotheque-${{ matrix.service }}:latest
+          format: table
+          output: trivy-report.txt
+          exit-code: '0'
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH
+
+      - name: Afficher le rapport dans le résumé
+        if: always()
+        run: |
+          echo "## Trivy — bibliotheque-${{ matrix.service }}" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat trivy-report.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
