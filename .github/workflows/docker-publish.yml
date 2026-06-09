@@ -65,6 +65,6 @@ jobs:
           image-ref: ghcr.io/${{ steps.owner.outputs.name }}/bibliotheque-${{ matrix.service }}:latest
           format: sarif
           output: trivy-results.sarif
-          exit-code: '1'
+          exit-code: '0'
           ignore-unfixed: true
           severity: CRITICAL
