@@ -124,7 +124,7 @@ docker-logs: ## Affiche les logs en temps réel
 # ── Playwright ────────────────────────────────────────────────────────────────
 playwright-install: ## Installe Playwright et les navigateurs
 	npm install
-	npx playwright install
+	npx playwright install --with-deps
 
 playwright-test: ## Exécute les tests Playwright (serveurs doivent être démarrés)
 	npx playwright test
