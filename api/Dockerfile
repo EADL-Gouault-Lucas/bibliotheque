@@ -7,7 +7,7 @@ COPY . .
 RUN swag init -g cmd/server/main.go -o docs/ --parseInternal
 RUN go build -o server ./cmd/server
 
-FROM alpine:3.19
+FROM alpine:3.21
 WORKDIR /app
 COPY --from=builder /app/server .
 EXPOSE 8080

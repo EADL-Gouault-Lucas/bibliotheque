@@ -6,7 +6,7 @@ COPY . .
 RUN go install github.com/a-h/templ/cmd/templ@latest && templ generate
 RUN go build -o server ./cmd/server
 
-FROM alpine:3.19
+FROM alpine:3.21
 WORKDIR /app
 COPY --from=builder /app/server .
 COPY --from=builder /app/web ./web
