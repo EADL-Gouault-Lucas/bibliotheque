@@ -20,9 +20,6 @@ services:
 
   api:
     image: ghcr.io/eadl-gouault-lucas/bibliotheque-api:latest
-    build:
-      context: ./api
-      dockerfile: Dockerfile
     container_name: bibliotheque-api
     restart: unless-stopped
     depends_on:
@@ -40,9 +37,6 @@ services:
 
   front:
     image: ghcr.io/eadl-gouault-lucas/bibliotheque-front:latest
-    build:
-      context: ./front
-      dockerfile: Dockerfile
     container_name: bibliotheque-front
     restart: unless-stopped
     depends_on:
