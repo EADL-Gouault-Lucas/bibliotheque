@@ -10,6 +10,5 @@ FROM alpine:3.19
 WORKDIR /app
 COPY --from=builder /app/server .
 COPY --from=builder /app/web ./web
-COPY .env .
 EXPOSE 3000
 CMD ["./server"]
