@@ -16,8 +16,6 @@ jobs:
     name: CI - Frontend
     uses: ./.github/workflows/ci-front.yml
 
-  # ── Tests Playwright (dépend des deux CI) ──────────────────────────────────
   playwright:
     name: Tests Playwright
-    needs: [ci-api, ci-front]
     uses: ./.github/workflows/playwright.yml
