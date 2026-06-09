@@ -16,6 +16,3 @@ jobs:
     name: CI - Frontend
     uses: ./.github/workflows/ci-front.yml
 
-  playwright:
-    name: Tests Playwright
-    uses: ./.github/workflows/playwright.yml

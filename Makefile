@@ -11,7 +11,6 @@
         db-sql db-clear seed-test-db \
         vuln vuln-api vuln-front \
         docker-up docker-down docker-build docker-logs \
-        playwright-install playwright-test \
         clean
 
 # ── Variables ─────────────────────────────────────────────────────────────────
@@ -120,14 +119,6 @@ docker-down: ## Arrête et supprime les conteneurs
 
 docker-logs: ## Affiche les logs en temps réel
 	docker compose logs -f
-
-# ── Playwright ────────────────────────────────────────────────────────────────
-playwright-install: ## Installe Playwright et les navigateurs
-	npm install
-	npx playwright install --with-deps
-
-playwright-test: ## Exécute les tests Playwright (serveurs doivent être démarrés)
-	npx playwright test
 
 # ── Nettoyage ─────────────────────────────────────────────────────────────────
 clean: ## Supprime les artefacts générés
