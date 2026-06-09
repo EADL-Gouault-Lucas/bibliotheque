@@ -4,6 +4,13 @@ description: 'Setup Go, installe templ, télécharge les dépendances et génèr
 runs:
   using: composite
   steps:
+    - name: Nettoyer le cache des modules Go
+      shell: bash
+      run: |
+        if command -v go &>/dev/null; then
+          go clean -modcache
+        fi
+
     - uses: actions/setup-go@v5
       with:
         go-version-file: front/go.mod

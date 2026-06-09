@@ -9,6 +9,14 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Nettoyer le cache des modules Go
+      shell: bash
+      run: |
+        if command -v go &>/dev/null; then
+          go clean -modcache
+        fi
+      if: ${{ inputs.cache == 'true' }}
+
     - uses: actions/setup-go@v5
       with:
         go-version-file: api/go.mod
