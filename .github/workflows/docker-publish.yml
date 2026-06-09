@@ -22,10 +22,10 @@ jobs:
             context: ./front
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6.0.3
 
       - name: Connexion à ghcr.io
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4.2.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -33,7 +33,7 @@ jobs:
 
       - name: Métadonnées de l'image
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6.1.0
         with:
           images: ghcr.io/${{ github.repository_owner }}/bibliotheque-${{ matrix.service }}
           tags: |
@@ -41,7 +41,7 @@ jobs:
             type=sha,prefix=
 
       - name: Build et push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7.2.0
         with:
           context: ${{ matrix.context }}
           push: true
