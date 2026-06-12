@@ -51,11 +51,12 @@ jobs:
             type=raw,value=${{ inputs.version }},enable=${{ inputs.version != '' }}
             type=sha,prefix=
 
-      - name: Build et push
+      - name: Build
         uses: docker/build-push-action@v7.2.0
         with:
           context: ${{ matrix.context }}
-          push: true
+          push: false
+          load: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
@@ -93,3 +94,10 @@ jobs:
           echo '```' >> $GITHUB_STEP_SUMMARY
           cat trivy-report.txt >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Push
+        run: |
+          echo "${{ steps.meta.outputs.tags }}" | while IFS= read -r tag; do
+            [ -z "$tag" ] && continue
+            docker push "$tag"
+          done
