@@ -2,6 +2,10 @@ name: CI
 
 on:
   push:
+    branches:
+      - '**'
+    tags:
+      - 'v*'
   pull_request:
   workflow_dispatch:
 
@@ -27,13 +31,13 @@ jobs:
   release:
     name: Release
     needs: [ci-api, ci-front]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: startsWith(github.ref, 'refs/tags/')
     uses: ./.github/workflows/release.yml
 
   docker-publish:
     name: Publication Docker
     needs: [ci-api, ci-front, release]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: startsWith(github.ref, 'refs/tags/')
     uses: ./.github/workflows/docker-publish.yml
     with:
       version: ${{ needs.release.outputs.tag }}
@@ -41,5 +45,5 @@ jobs:
   deploy-pages:
     name: Documentation GitHub Pages
     needs: [ci-api]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: startsWith(github.ref, 'refs/tags/')
     uses: ./.github/workflows/deploy-pages.yml
