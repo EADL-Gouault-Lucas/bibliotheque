@@ -9,6 +9,8 @@ permissions:
   contents: write
   packages: write
   security-events: write
+  pages: write
+  id-token: write
 
 jobs:
   # ── Orchestration API ───────────────────────────────────────────────────────
@@ -35,3 +37,9 @@ jobs:
     uses: ./.github/workflows/docker-publish.yml
     with:
       version: ${{ needs.release.outputs.tag }}
+
+  deploy-pages:
+    name: Documentation GitHub Pages
+    needs: [ci-api]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    uses: ./.github/workflows/deploy-pages.yml
